@@ -1,0 +1,80 @@
+<html>
+	<head>
+		<title>Jumbotron Manager</title>
+
+		<!-- Bootstrap Stylesheet -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+		<link rel="stylesheet" href="lib/jquery-ui-1.11.4/jquery-ui.min.css">
+		<link rel="stylesheet" href="lib/jquery-ui-slider-pips/jquery-ui-slider-pips.css">
+		<!-- Slick
+		<link rel="stylesheet" href="lib/slick/slick.css">
+		<link rel="stylesheet" href="lib/slick/slick-theme.css"> -->
+
+		<!-- Main Stylesheet -->
+		<link rel="stylesheet" href="css/jumboManager.css">
+
+	</head>
+	<body>
+		<div id="jumbomanager">
+			<div class="workspace-container">
+				<div class="canvas-container">
+					<div id="jumbomanager-canvas">
+						<canvas id="jumbomanager-main-canvas"></canvas>
+						<!-- popuplated by js -->
+					</div>
+				</div>
+				<div class="previews-container">
+					<div id="jumbomanager-previews">
+						<!-- . -->
+						
+					</div>
+				</div>
+			</div>
+			<div class="controls-container">
+				<div id="jumbomanager-controls">
+					<!-- . -->
+					<div class="control-group">
+						<div class="checkbox">
+							<label>
+								<input id="jumbomanager-grid-toggle" type="checkbox"/> Show Grid
+							</label>
+						</div>
+
+						<div class="form-group">
+							<div class="slider-container">
+								<div class="slider-title">Horizontal Gap</div>
+								<div id="jumbomanager-grid-hgap"></div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="slider-container">
+								<div class="slider-title">Vertical Gap</div>
+								<div id="jumbomanager-grid-vgap"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Core -->
+		<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<script src="https://code.jquery.com/ui/1.11.3/jquery-ui.min.js"></script>
+		<script src="lib/jquery-ui-slider-pips/jquery-ui-slider-pips.js"></script>
+
+		<!-- Slick
+		<script src="lib/slick/slick.min.js"></script> -->
+
+		<!-- jCanvas -->
+		<script src="js/jResponsiveCanvas.js"></script>
+		<script src="lib/jCanvas/jcanvas.min.js"></script>
+
+		<!-- Javascripts -->
+		<script src="js/jumboManagerREST.js"></script>
+		<script src="js/jumboManager.js"></script>
+		<script src="js/globalDisableSelection.js"></script>
+	</body>
+</html>
