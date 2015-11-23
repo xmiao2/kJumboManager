@@ -5,15 +5,24 @@
 
 window.jumboManager = (function($){
 
-	var ID = "Id",
+	var
+	// JSON keys
+	ID = "Id",
 	JUMBOS = "jumbos",
 	JUMBO = "jumbo",
+
+	// Class names
 	IMAGE_CONTAINER = "image-container",
 	PREVIEW_IMAGE_CONTAINER = "preview-image-container",
 	CANVAS_IMAGE_CONTAINER = "canvas-image-container",
+	CURRENT_JUMBO = "current-jumbo",
+
+	// Instance variables
 	settings = {},
 	ui = {},
 	jumbos = [],
+
+	// Defaults
 	defaultOptions = {
 		canvasId: "jumbomanager-canvas",
 		previewsId: "jumbomanager-previews",
@@ -24,12 +33,70 @@ window.jumboManager = (function($){
 		gridHGapId: "jumbomanager-grid-hgap"
 	},
 
-	Jumbo = {
-		getImageUrl: function(jumbo){
-			return jumbo.image;
+	// Inner classes
+	Jumbos = (function() {
+
+		var objects = [];
+		
+		return {
+			getJumbos: function() {
+				return objects;
+			},
+
+			setJumbos: function(jumbos) {
+				objects = jumbos;
+			},
+
+			validate: function() {
+				return objects && !!objects.length;
+			},
+
+			getFirst: function() {
+				return objects[0];
+			},
+
+			loadJumbos: function() {
+				var dfd = $.Deferred();
+
+				$.when(jumboManagerREST.ajaxFetchJumbos()).done(function(data){
+					jumbos = data;
+					dfd.resolve();
+				});
+
+				return dfd.promise();
+			},
+
+			init: function() {
+				var dfd = $.Deferred(),
+
+				promises = [
+					Jumbos.loadJumbos()
+				];
+
+				$.when.apply(this, promises).done(function(){
+					if(Jumbos.validate()) {
+						dfd.resolve();
+					} else {
+						dfd.fail({
+							failMessage: "Failed to validate jumbos"
+						});
+					}
+				});
+
+				return dfd.promise();
+			}
 		}
-	},
+	})(),
+
+	Jumbo = (function() {
+		return {
+			getImageUrl: function(jumbo){
+				return jumbo.image;
+			}
+		}
+	})(),
 	
+	// Private Methods	
 	initSettings = function(options) {
 
 		settings = $.extend({}, defaultOptions, options);
@@ -122,6 +189,10 @@ window.jumboManager = (function($){
 			)
 	},
 
+	focusPreviewImage = function($preview) {
+		$preview.addClass(CURRENT_JUMBO);
+	},
+
 	renderPreviewImages = function() {
 
 		var imageClickListener = function(event) {
@@ -129,6 +200,7 @@ window.jumboManager = (function($){
 			event.preventDefault();
 			var imageUrl = $(this).find("img").prop("src");
 			renderCanvasImage(imageUrl);
+			focusPreviewImage($(this));
 		};
 			
 		$.each(jumbos, function(idx, j){
@@ -146,19 +218,9 @@ window.jumboManager = (function($){
 		// Remove existing image
 		ui.$canvas.find("."+IMAGE_CONTAINER).remove();
 		renderImage(imageUrl, ui.$canvas, CANVAS_IMAGE_CONTAINER);
-	},
-
-	loadJumbos = function() {
-		var dfd = $.Deferred();
-
-		$.when(jumboManagerREST.ajaxFetchJumbos()).done(function(data){
-			jumbos = data;
-			dfd.resolve();
-		});
-
-		return dfd;
 	};
 
+	// Public scope
 	return {
 		getSettings: function() {
 			return settings;
@@ -183,6 +245,7 @@ window.jumboManager = (function($){
 						//unlog loading images sources
 						//log render images
 						renderPreviewImages();
+						renderCanvasImage(Jumbo.getImageUrl(Jumbos.getFirst()));
 					} else {
 						//log jumbo error
 						alert("Jumbo error")
