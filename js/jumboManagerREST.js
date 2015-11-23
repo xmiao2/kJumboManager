@@ -59,19 +59,7 @@ window.jumboManagerREST = (function($){
 					},
 					{
 						image: "img/10.jpg"
-					},
-					{
-						image: "img/3.jpg"
-					},
-					{
-						image: "img/4.jpg"
-					},
-					{
-						image: "img/5.jpg"
-					},
-					{
-						image: "img/6.jpg"
-					},
+					}
 				]
 			}
 

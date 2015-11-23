@@ -36,51 +36,67 @@ window.jumboManager = (function($){
 	// Inner classes
 	Jumbos = (function() {
 
-		var objects = [];
+		var INIT_RENDER_IDX = 0,
+		_ui = {},
+		_objects = [],
+		_current = {},
+
+		validate = function() {
+			return _objects && !!_objects.length;
+		},
+
+		loadJumbos = function() {
+			var dfd = $.Deferred();
+
+			$.when(jumboManagerREST.ajaxFetchJumbos()).done(function(data){
+				$.each(data, function(idx, jumboJson){
+					_objects.push(Jumbo.create(jumboJson));
+				});
+				dfd.resolve();
+			}).fail(function(){
+				dfd.reject("Jumbos fetching ajax failed");
+			});
+
+			return dfd.promise();
+		},
+
+		initRenderCanvasImage = function() {
+			_objects[INIT_RENDER_IDX].renderFocusImage();
+		},
+
+		renderPreviewImages = function() {				
+			$.each(_objects, function(idx, jumbo){
+				jumbo.renderPreviewImage();
+			});
+		};
 		
 		return {
 			getJumbos: function() {
-				return objects;
+				return _objects;
 			},
 
 			setJumbos: function(jumbos) {
-				objects = jumbos;
+				_objects = jumbos;
 			},
 
-			validate: function() {
-				return objects && !!objects.length;
-			},
+			init: function(ui) {
+				_ui = ui;
 
-			getFirst: function() {
-				return objects[0];
-			},
-
-			loadJumbos: function() {
-				var dfd = $.Deferred();
-
-				$.when(jumboManagerREST.ajaxFetchJumbos()).done(function(data){
-					jumbos = data;
-					dfd.resolve();
-				});
-
-				return dfd.promise();
-			},
-
-			init: function() {
 				var dfd = $.Deferred(),
-
 				promises = [
-					Jumbos.loadJumbos()
+					loadJumbos()
 				];
 
 				$.when.apply(this, promises).done(function(){
-					if(Jumbos.validate()) {
+					if(validate()) {
+						renderPreviewImages();
+						initRenderCanvasImage();
 						dfd.resolve();
 					} else {
-						dfd.fail({
-							failMessage: "Failed to validate jumbos"
-						});
+						dfd.reject("Failed to validate jumbos");
 					}
+				}).fail(function(msg){
+					dfd.reject(msg);
 				});
 
 				return dfd.promise();
@@ -89,9 +105,58 @@ window.jumboManager = (function($){
 	})(),
 
 	Jumbo = (function() {
+		var _ui = {};
 		return {
-			getImageUrl: function(jumbo){
-				return jumbo.image;
+			create: function(jumboJson) {
+				var imageUrl = jumboJson.image,	//replace this after finalizing json structure
+				
+				_focusPreviewImage = function() {
+					$("."+CURRENT_JUMBO).removeClass(CURRENT_JUMBO);
+					$dom.addClass(CURRENT_JUMBO);
+				},
+
+				_renderCanvasImage = function() {
+					// Remove existing image
+					_ui.$canvas.find("."+IMAGE_CONTAINER).remove();
+					_ui.$canvas
+						.append(
+							getImageContainer(imageUrl)
+								.addClass(CANVAS_IMAGE_CONTAINER)
+						)
+					;
+				},
+
+				_renderFocusImage = function() {
+					_renderCanvasImage();
+					_focusPreviewImage();
+				},
+
+				$dom = getImageContainer(imageUrl)
+					.addClass(PREVIEW_IMAGE_CONTAINER)
+					// .data(JUMBO, jumbo)
+					.on("click probe", function(){
+						event.stopPropagation();
+						event.preventDefault();
+						_renderFocusImage();
+					})
+				;
+				return {
+					getImageUrl: function() {
+						return imageUrl;
+					},
+
+					renderFocusImage: function() {
+						return _renderFocusImage();
+					},
+					
+					renderPreviewImage: function() {
+						_ui.$previews.append($dom);
+					}
+				}
+			},
+			init: function(ui) {
+				_ui = ui;
+				return $.Deferred().resolve().promise();
 			}
 		}
 	})(),
@@ -163,61 +228,12 @@ window.jumboManager = (function($){
 		return true;
 	},
 
-	validateJumbos = function() {
-		return jumbos && !!jumbos.length;
-	},
-
-	renderImage = function(imageUrl, $parent, className, clickListener) {
-		$parent
-			.append($("<div></div>")
-				.addClass(IMAGE_CONTAINER)
-				.addClass(!!className ? className : "")
-				.append($("<img></img>")
-					.prop("src", imageUrl)
-				)
-				.off("click")
-				.on("click probe", clickListener)
-			)
-		;	
-	},
-
 	getImageContainer = function(imageUrl) {
 		return $("<div></div>")
 			.addClass(IMAGE_CONTAINER)
 			.append($("<img></img>")
 				.prop("src", imageUrl)
 			)
-	},
-
-	focusPreviewImage = function($preview) {
-		$preview.addClass(CURRENT_JUMBO);
-	},
-
-	renderPreviewImages = function() {
-
-		var imageClickListener = function(event) {
-			event.stopPropagation();
-			event.preventDefault();
-			var imageUrl = $(this).find("img").prop("src");
-			renderCanvasImage(imageUrl);
-			focusPreviewImage($(this));
-		};
-			
-		$.each(jumbos, function(idx, j){
-			var imageUrl = Jumbo.getImageUrl(j);
-			ui.$previews.append(
-				getImageContainer(imageUrl)
-					.addClass(PREVIEW_IMAGE_CONTAINER)
-					.data(JUMBO, j)
-					.on("click probe", imageClickListener)
-			);
-		});
-	},
-
-	renderCanvasImage = function(imageUrl) {
-		// Remove existing image
-		ui.$canvas.find("."+IMAGE_CONTAINER).remove();
-		renderImage(imageUrl, ui.$canvas, CANVAS_IMAGE_CONTAINER);
 	};
 
 	// Public scope
@@ -232,25 +248,19 @@ window.jumboManager = (function($){
 			return jumbos;
 		},
 		init: function(options) {
-			initSettings(options);
 			globalDisableSelection();
+			initSettings(options);
 			if(validateUi()) {
 
 				initMainCanvas();
 				initControls();
 
-				//log loading images sources
-				$.when(loadJumbos()).done(function(){
-					if(validateJumbos) {
-						//unlog loading images sources
-						//log render images
-						renderPreviewImages();
-						renderCanvasImage(Jumbo.getImageUrl(Jumbos.getFirst()));
-					} else {
-						//log jumbo error
-						alert("Jumbo error")
-					}
+				$.when(Jumbos.init(ui), Jumbo.init(ui)).done(function(){
+					
+				}).fail(function(msg){
+					alert("Failed because: " + msg);
 				});
+
 			} else {
 				//log ui initialization error
 				alert("Ui Error");
