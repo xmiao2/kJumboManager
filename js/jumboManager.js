@@ -13,9 +13,9 @@ window.jumboManager = (function($){
 
 	// Class names
 	IMAGE_CONTAINER = "image-container",
-	PREVIEW_IMAGE_CONTAINER = "preview-image-container",
 	CANVAS_IMAGE_CONTAINER = "canvas-image-container",
 	CURRENT_JUMBO = "current-jumbo",
+	CURRENT_VISIBLE_PREVIEW = "current_visible_preview",
 
 	// Instance variables
 	settings = {},
@@ -30,7 +30,9 @@ window.jumboManager = (function($){
 		mainCanvasId: "jumbomanager-main-canvas",
 		gridToggleId: "jumbomanager-grid-toggle",
 		gridVGapId: "jumbomanager-grid-vgap",
-		gridHGapId: "jumbomanager-grid-hgap"
+		gridHGapId: "jumbomanager-grid-hgap",
+		maxPreviewCount: 10,	// This values should be a even number, or else be reduced to a even number
+		minPreviewContainerWidth: 70
 	},
 
 	// Inner classes
@@ -132,7 +134,6 @@ window.jumboManager = (function($){
 				},
 
 				$dom = getImageContainer(imageUrl)
-					.addClass(PREVIEW_IMAGE_CONTAINER)
 					// .data(JUMBO, jumbo)
 					.on("click probe", function(event){
 						event.stopPropagation();
@@ -184,34 +185,47 @@ window.jumboManager = (function($){
 		});
 	},
 
-	initControls = function() {
-		ui.$gridToggle
-			.on("change", function(){
-				var showGrid = $(this).prop("checked");
-				ui.$mainCanvas.responsiveCanvas({showGrid: showGrid});
-			})
-		;
+	initControls = function(options) {
+		(function initGridControls(options) {
+			ui.$mainCanvas.responsiveCanvas({
+				showGrid: options.initShowGrid,
+				gridHGap: options.initGridHGap,
+				gridVGap: options.initGridVGap
+			});
 
-		ui.$gridHGap.slider({
-			min: 5,
-			max: 70,
-			step: 5,
-			value: $.responsiveCanvasDefaults.gridHGap,
-			slide: function(event, _ui) {
-				var gridHGap = _ui.value;
-				ui.$mainCanvas.responsiveCanvas({gridHGap: gridHGap, redrawGrid: true});
-			}
-		}).slider("pips", {suffix: "px"}).slider("float", {suffix: "px"});
-		ui.$gridVGap.slider({
-			min: 5,
-			max: 70,
-			step: 5,
-			value: $.responsiveCanvasDefaults.gridVGap,
-			slide: function(event, _ui) {
-				var gridVGap = _ui.value;
-				ui.$mainCanvas.responsiveCanvas({gridVGap: gridVGap, redrawGrid: true});
-			}
-		}).slider("pips", {suffix: "px"}).slider("float", {suffix: "px"});
+			ui.$gridToggle
+				.on("change", function(){
+					var showGrid = $(this).prop("checked");
+					ui.$mainCanvas.responsiveCanvas({showGrid: showGrid});
+				})
+				.prop("checked", options.initShowGrid)
+			;
+
+			ui.$gridHGap.slider({
+				min: 5,
+				max: 70,
+				step: 5,
+				value: options.initGridHGap,
+				slide: function(event, _ui) {
+					var gridHGap = _ui.value;
+					ui.$mainCanvas.responsiveCanvas({gridHGap: gridHGap, redrawGrid: true});
+				}
+			}).slider("pips", {suffix: "px"}).slider("float", {suffix: "px"});
+			ui.$gridVGap.slider({
+				min: 5,
+				max: 70,
+				step: 5,
+				value: options.initGridVGap,
+				slide: function(event, _ui) {
+					var gridVGap = _ui.value;
+					ui.$mainCanvas.responsiveCanvas({gridVGap: gridVGap, redrawGrid: true});
+				}
+			}).slider("pips", {suffix: "px"}).slider("float", {suffix: "px"});
+		})({
+			initShowGrid: options.initShowGrid,
+			initGridHGap: options.initGridHGap || $.responsiveCanvasDefaults.gridHGap,
+			initGridVGap: options.initGridVGap || $.responsiveCanvasDefaults.gridVGap
+		});
 	},
 
 	validateUi = function() {
@@ -226,6 +240,41 @@ window.jumboManager = (function($){
 			}
 		}
 		return true;
+	},
+
+	initPreviewPagination = function() {
+
+		var initResponsivePreview = function() {
+			var previewsContainerWidth = ui.$previews.width(),
+			previewCount = settings.maxPreviewCount % 2 === 0 ?
+				settings.maxPreviewCount : settings.maxPreviewCount - 1,	// Reduce to even
+			previewContainerWidth = (100 / previewCount) + "%";
+			while(previewsContainerWidth / previewCount < settings.minPreviewContainerWidth) {
+				previewCount -= 1;
+				previewContainerWidth = (100 / previewCount) + "%";
+			}
+
+			ui.$previews.children("."+IMAGE_CONTAINER)
+				.width(previewContainerWidth)
+				.removeClass(CURRENT_VISIBLE_PREVIEW)
+				.slice(0, previewCount)
+					.addClass(CURRENT_VISIBLE_PREVIEW)
+			;
+		};
+
+		initResponsivePreview();
+		$(window).on("resize", initResponsivePreview);
+
+		// Temps
+		ui.$previews.sortable({
+			tolerance: "pointer",
+			opacity: 0.5,
+			containment: "parent",
+			delay: 150,
+			start: function(event, ui) {
+				ui.placeholder.width(ui.helper.width());
+			}
+		});	
 	},
 
 	getImageContainer = function(imageUrl) {
@@ -253,10 +302,14 @@ window.jumboManager = (function($){
 			if(validateUi()) {
 
 				initMainCanvas();
-				initControls();
+				initControls({
+					initShowGrid: true,
+					initGridHGap: 50,
+					initGridVGap: 50
+				});
 
 				$.when(Jumbos.init(ui), Jumbo.init(ui)).done(function(){
-					
+					initPreviewPagination();
 				}).fail(function(msg){
 					alert("Failed because: " + msg);
 				});

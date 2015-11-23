@@ -66,8 +66,10 @@
 	},
 
 	_redrawGrid = function($canvas) {
-		_clearCanvas($canvas);
-		_showGrid($canvas);
+		if(settings.showGrid) {
+			_clearCanvas($canvas);
+			_showGrid($canvas);
+		}
 	},
 
 	_clearCanvas = function($canvas) {
@@ -82,6 +84,7 @@
 		var onResize = event.data.onResize;
 
 		_resize($canvas, $parent);
+		_redrawGrid($canvas);
 		onResize(event);
 	};
 
@@ -97,8 +100,7 @@
 				_resize($canvas, $parent);
 			}
 
-			// Only redraw grid if grid is already shown
-			if(!!options.redrawGrid && settings.showGrid) {
+			if(!!options.redrawGrid) {
 				_redrawGrid($canvas);
 			}
 
