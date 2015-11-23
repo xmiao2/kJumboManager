@@ -134,7 +134,7 @@ window.jumboManager = (function($){
 				$dom = getImageContainer(imageUrl)
 					.addClass(PREVIEW_IMAGE_CONTAINER)
 					// .data(JUMBO, jumbo)
-					.on("click probe", function(){
+					.on("click probe", function(event){
 						event.stopPropagation();
 						event.preventDefault();
 						_renderFocusImage();
