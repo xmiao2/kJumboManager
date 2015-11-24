@@ -5,13 +5,20 @@
 		<!-- Bootstrap Stylesheet -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
+		<!-- jQuery UI -->
 		<link rel="stylesheet" href="lib/jquery-ui-1.11.4/jquery-ui.min.css">
+
+		<!-- Pips jQuery Slider -->
 		<link rel="stylesheet" href="lib/jquery-ui-slider-pips/jquery-ui-slider-pips.css">
-		<!-- Slick
-		<link rel="stylesheet" href="lib/slick/slick.css">
+
+		<!-- FontAwesome -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+		<!-- Slick Slider -->
+		<!-- <link rel="stylesheet" href="lib/slick/slick.css">
 		<link rel="stylesheet" href="lib/slick/slick-theme.css"> -->
 
-		<!-- spectrum -->
+		<!-- Spectrum Color Picker -->
 		<link rel="stylesheet" href="lib/spectrum/spectrum.css">
 
 		<!-- Main Stylesheet -->
@@ -24,14 +31,16 @@
 				<div class="canvas-container">
 					<div id="jumbomanager-canvas">
 						<canvas id="jumbomanager-main-canvas"></canvas>
-						<!-- popuplated by js -->
-						<div id="jumbomanager-background"></div>
+						<span class="slideButton" id="jumbomanager-prevSlide"><i class="fa fa-5x fa-angle-left"></i></span>
+						<div id="jumbomanager-background">
+							<!-- Canvas image container populated by JS -->
+						</div>
+						<span class="slideButton" id="jumbomanager-nextSlide"><i class="fa fa-5x fa-angle-right"></i></span>
 					</div>
 				</div>
 				<div class="previews-container">
 					<div id="jumbomanager-previews">
-						<!-- . -->
-						
+						<!-- Preview image containers populated by JS -->
 					</div>
 				</div>
 			</div>
@@ -40,21 +49,25 @@
 					<div class="control-group">
 						<h4>General</h4>
 						<div class="form-group">
-							<div class="form-group">
-								<div class="slider-container">
-									<label for="jumbomanager-bg-max-height">Jumbotron Max Height</label>
-									<div id="jumbomanager-bg-max-height"></div>
-								</div>
+							<div class="slider-container">
+								<label for="jumbomanager-bg-max-height">Jumbotron Max Height</label>
+								<div id="jumbomanager-bg-max-height"></div>
 							</div>
 						</div>
 					</div>
-					<div class="control-group form-inline">
+					<div class="control-group">
 						<h4>Current Slide</h4>
 						<div class="form-group">
 							<label>
 								Background Color&nbsp;
 							</label>
-							<input id="jumbomanager-slide-bg-color" type="text" class="form-control"/>
+							<input id="jumbomanager-slide-bg-color" type="text"/>
+						</div>
+						<div class="form-group">
+							<div class="slider-container">
+								<label for="jumbomanager-bg-max-height">Responsive Widths</label>
+								<div id="jumbomanager-responsive-widths"></div>
+							</div>
 						</div>
 					</div>
 					<div class="control-group">
@@ -89,8 +102,8 @@
 		<script src="https://code.jquery.com/ui/1.11.3/jquery-ui.min.js"></script>
 		<script src="lib/jquery-ui-slider-pips/jquery-ui-slider-pips.js"></script>
 
-		<!-- Slick
-		<script src="lib/slick/slick.min.js"></script> -->
+		<!-- Slick Slider -->
+		<!-- <script src="lib/slick/slick.min.js"></script> -->
 
 		<!-- jCanvas -->
 		<script src="js/jResponsiveCanvas.js"></script>

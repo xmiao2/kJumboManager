@@ -15,7 +15,10 @@ window.jumboManager = (function($){
 	IMAGE_CONTAINER = "image-container",
 	CANVAS_IMAGE_CONTAINER = "canvas-image-container",
 	CURRENT_JUMBO = "current-jumbo",
-	CURRENT_VISIBLE_PREVIEW = "current_visible_preview",
+	CURRENT_VISIBLE_PREVIEW = "current-visible-preview",
+	TABLET_RANGE_BACKGROUND = "tablet-range-background",
+	MOBILE_RANGE_BACKGROUND = "mobile-range-background",
+	DESKTOP_RANGE_BACKGROUND = "desktop-range-background",
 
 	// Instance variables
 	settings = {},
@@ -34,6 +37,9 @@ window.jumboManager = (function($){
 		gridHGapId: "jumbomanager-grid-hgap",
 		slideBgColorId: "jumbomanager-slide-bg-color",
 		bgMaxHeightId: "jumbomanager-bg-max-height",
+		prevSlideId: "jumbomanager-prevSlide",
+		nextSlideId: "jumbomanager-nextSlide",
+		responsiveWidthsId: "jumbomanager-responsive-widths",
 		maxPreviewCount: 10,	// This values should be a even number, or else be reduced to a even number
 		minPreviewContainerWidth: 70,
 		maxBgHeight: 400
@@ -45,7 +51,7 @@ window.jumboManager = (function($){
 		var INIT_RENDER_IDX = 0,
 		_ui = {},
 		_objects = [],
-		_current = {},
+		_currentJumbo = {},
 
 		validate = function() {
 			return _objects && !!_objects.length;
@@ -66,11 +72,53 @@ window.jumboManager = (function($){
 			return dfd.promise();
 		},
 
-		initRenderBackgroundImage = function() {
+		_renderFirstJumbo = function() {
 			_objects[INIT_RENDER_IDX].renderFocusImage();
 		},
 
-		renderPreviewImages = function() {				
+		_getCurrentJumboIndex = function() {
+			return _objects.indexOf(_currentJumbo);
+		},
+
+		_validateSlideOperation = function() {
+			if(_getCurrentJumboIndex() < 0) {
+				console.log("Invalid operation: currentJumbo does not exist.");
+				return false;
+			}
+			if(_objects.length <= 1) {
+				console.log("Invalid operation: not enough jumbos to traverse");
+				return false;
+			}
+			return true;
+		},
+
+		_renderNextJumbo = function() {
+			if(!_validateSlideOperation()) {
+				return;
+			}
+			var nextIndex = _getCurrentJumboIndex() + 1;
+			if(nextIndex >= _objects.length) {
+				nextIndex = 0;
+			}
+			_objects[nextIndex].renderFocusImage();
+		},
+
+		_renderPrevJumbo = function() {
+			if(!_validateSlideOperation()) {
+				return;
+			}
+			var prevIndex = _getCurrentJumboIndex() - 1;
+			if(prevIndex < 0) {
+				prevIndex = _objects.length - 1;
+			}
+			_objects[prevIndex].renderFocusImage();
+		},
+
+		initRenderBackgroundImage = function() {
+			_renderFirstJumbo();
+		},
+
+		initRenderPreviewImages = function() {				
 			$.each(_objects, function(idx, jumbo){
 				jumbo.renderPreviewImage.apply(jumbo, null);
 			});
@@ -85,6 +133,22 @@ window.jumboManager = (function($){
 				_objects = jumbos;
 			},
 
+			setCurrentJumbo: function(jumbo) {
+				_currentJumbo = jumbo;
+			},
+
+			getCurrentJumbo: function(jumbo) {
+				return _currentJumbo;
+			},
+
+			renderNextJumbo: function() {
+				return _renderNextJumbo();
+			},
+
+			renderPrevJumbo: function() {
+				return _renderPrevJumbo();
+			},
+
 			init: function(ui) {
 				_ui = ui;
 
@@ -95,7 +159,7 @@ window.jumboManager = (function($){
 
 				$.when.apply(this, promises).done(function(){
 					if(validate()) {
-						renderPreviewImages();
+						initRenderPreviewImages();
 						initRenderBackgroundImage();
 						dfd.resolve();
 					} else {
@@ -111,17 +175,12 @@ window.jumboManager = (function($){
 	})(),
 
 	Jumbo = (function() {
-		var _ui = {},
-		_currentJumbo = {};
+		var _ui = {};
 		return {
 			create: function(jumboJson) {
 				var imageUrl = jumboJson.image.url,	//replace this after finalizing json structure
 				
 				bgColor = jumboJson.image.bgColor,
-
-				_setAsCurrentJumbo = function() {
-					_currentJumbo = this;
-				},
 
 				_focusPreviewImage = function() {
 					$("."+CURRENT_JUMBO).removeClass(CURRENT_JUMBO);
@@ -133,6 +192,7 @@ window.jumboManager = (function($){
 						.html(
 							getImageContainer(imageUrl)
 								.addClass(CANVAS_IMAGE_CONTAINER)
+								.css("background-color", bgColor)
 						)
 						.find("img")
 							.css("maxHeight",settings.maxBgHeight)
@@ -140,13 +200,15 @@ window.jumboManager = (function($){
 				},
 
 				_renderFocusImage = function() {
+					Jumbos.setCurrentJumbo(this);
 					_renderBackgroundImage();
 					_renderControls();
 					_focusPreviewImage();
-					_setAsCurrentJumbo.apply(this, arguments);
+					_ui.$mainCanvas.responsiveCanvas({redrawGrid: true, resize: true});
 				},
 
 				_renderControls = function() {
+					// Background color
 					_ui.$slideBgColor
 						.spectrum({
 							color: bgColor,
@@ -159,8 +221,87 @@ window.jumboManager = (function($){
 								_ui.$background.find("."+IMAGE_CONTAINER)
 									.css("background-color", color.toRgbString())
 								;
+								bgColor = color.toRgbString();
 							}
 						})
+					;
+
+					//Responsive Widths
+					_ui.$responsiveWidths
+						.slider({
+							range: true,
+							step: 100,
+							min: 300,
+							max: 1200,
+							values: [600, 900],
+							create: function(event, ui) {
+
+								var $mobileHandle = $(this).children(".ui-slider-handle").eq(0),
+								$tabletHandle = $(this).children(".ui-slider-handle").eq(1),
+								left = $mobileHandle.css("left"),
+								right = $tabletHandle.css("left"),
+								_tooltipPosition = {
+									my: "center bottom-10",
+									at: "center top"
+								};
+				
+								// Create two backgrounds besides jQuery UI's existing range background
+								$(this).children(".ui-slider-range")
+									.addClass(TABLET_RANGE_BACKGROUND)
+									.prop("title","tablet")
+									.tooltip({position: _tooltipPosition})
+								;
+
+								$(this)
+									.append($("<div></div>")
+										.addClass("ui-slider-range")
+										.addClass("ui-widget-header")
+										.addClass("ui-corner-all")
+										.addClass(MOBILE_RANGE_BACKGROUND)
+										.prop("title","mobile")
+										.tooltip({position: _tooltipPosition})
+										.css("left", 0)
+										.css("width", left)
+									)
+									.append($("<div></div>")
+										.addClass("ui-slider-range")
+										.addClass("ui-widget-header")
+										.addClass(DESKTOP_RANGE_BACKGROUND)
+										.prop("title","desktop")
+										.tooltip({position: _tooltipPosition})
+										.addClass("ui-corner-all")
+										.css("left", right)
+										.css("right", 0)
+									)
+								;
+							},
+							slide: function(event, ui) {
+								// Setting timeout because jquery ui renders range background
+								// AFTER the slide event. This is an easy but hacky way to handle
+								// API limitation, but I'll let it.. slide (see what I did there? :D)
+								// since it's purely aesthetic. If anything goes wrong in this tick,
+								// (ex: jQuery UI hanged and couldn't set ui-slider-range's width
+								// in 10 milliseconds), it will re-adjust itself on the next slide
+								// event
+								setTimeout(function(){
+									// Update second slider range background
+									var $mobileHandle = $(this).children(".ui-slider-handle").eq(0),
+									$tabletHandle = $(this).children(".ui-slider-handle").eq(1),
+									left = $mobileHandle.css("left"),
+									right = $tabletHandle.css("left");
+
+									$(this).find("."+MOBILE_RANGE_BACKGROUND)
+										.css("width", left)
+									;
+
+									$(this).find("."+DESKTOP_RANGE_BACKGROUND)
+										.css("left", right)
+									;
+								}.bind(this), 10);
+							}
+						})
+						.slider("pips", {rest: "label"});
+						// .slider("float", {suffix: "px"});
 					;
 				},
 
@@ -193,10 +334,6 @@ window.jumboManager = (function($){
 						;
 					}
 				}
-			},
-
-			getCurrentJumbo: function() {
-				return _currentJumbo;
 			},
 
 			init: function(ui) {
@@ -233,20 +370,29 @@ window.jumboManager = (function($){
 		(function initGeneralControls(options){
 			ui.$bgMaxHeight.slider({
 				min: 50,
-				max: 600,
+				max: 700,
 				step: 50,
 				value: options.initBgMaxHeight,
 				slide: function(event, _ui) {
 					var bgMaxHeight = _ui.value;
-					//TODO get current jumbo and update its max height
 					settings.maxBgHeight = bgMaxHeight;
-					Jumbo.getCurrentJumbo().renderFocusImage();
+					Jumbos.getCurrentJumbo().renderFocusImage();
 				}
 			}).slider("pips", {suffix: "px"}).slider("float", {suffix: "px"});
 			
 		})({
 			initBgMaxHeight: options.initBgMaxHeight
 		});
+
+		(function initSlideControls(options) {
+			ui.$prevSlide.on("click", function(){
+				Jumbos.renderPrevJumbo();
+			});
+
+			ui.$nextSlide.on("click", function(){
+				Jumbos.renderNextJumbo();
+			});
+		})();
 
 		(function initGridControls(options) {
 			ui.$mainCanvas.responsiveCanvas({

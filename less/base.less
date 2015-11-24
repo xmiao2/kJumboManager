@@ -1,9 +1,15 @@
+@dark-grey:							#a5a5a5;
 @grey: 								#c9c9c9;
 @light-grey: 						#e3e3e3;
 @blue: 								#89bdd3;
 @light-blue:						#9ad3de;
 @yellow:							#ffff00;
 @black:								#000000;
+@white:								#ffffff;
+@red:								#ff0000;
+@light-green:						#33dd55;
+@light-yellow:						#ffff00;
+@light-red:							#ff5555;
 			
 @base-font-size:					14px;
 @background-color:					@light-grey;
@@ -11,6 +17,10 @@
 @base-font-family:					"Helvetica Neue",Helvetica,Arial,sans-serif;
 
 @preview-focus-color:				@yellow;
+
+@mobile-slider-background-color:	@light-red;
+@tablet-slider-background-color:	@light-yellow;
+@desktop-slider-background-color:	@light-green;
 
 @tablet-width:						960px;
 
@@ -56,4 +66,21 @@ body {
 	&>* {
 		font-size: initial;
 	}
+}
+
+.vertical-align(@position) {
+	position: @position;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	-ms-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+
+.gradient (@startColor: #eee, @endColor: @startColor * 0.8) {
+	background-color: @startColor;
+	background: -webkit-gradient(linear, left top, left bottom, from(@startColor), to(@endColor));
+	background: -webkit-linear-gradient(top, @startColor, @endColor);
+	background: -moz-linear-gradient(top, @startColor, @endColor);
+	background: -ms-linear-gradient(top, @startColor, @endColor);
+	background: -o-linear-gradient(top, @startColor, @endColor);
 }

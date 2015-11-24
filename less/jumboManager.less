@@ -25,20 +25,24 @@
 		}
 	}*/
 
-	.slick-slider {
-		margin-bottom: 0;
+	.slideButton {
+		.vertical-align(absolute);
+		z-index: 1000;
+		cursor: pointer;
+		color: @grey;
+
+		&:hover {
+			color: @white;
+			transition: color 0.25s 0s ease;
+		}
 	}
 
-	.slick-prev:before, .slick-next:before {
-		color: @black;
+	.slideButton#jumbomanager-prevSlide {
+		left: 1rem;
 	}
 
-	.slick-prev:before {
-		content: "<";
-	}
-
-	.slick-next:before {
-		content: ">";
+	.slideButton#jumbomanager-nextSlide {
+		right: 1rem;
 	}
 }
 
@@ -47,7 +51,6 @@
 	position: relative;
 	.image-container {
 		width: 100%;
-		background: rgba(192,216,240,1);
 	}
 }
 
@@ -99,6 +102,18 @@
 	.slider-container {
 		margin-left: auto;
 		margin-right: auto;
+	}
+	.mobile-range-background {
+		background: none;
+		.gradient(@mobile-slider-background-color);
+	}
+	.tablet-range-background {
+		background: none;
+		.gradient(@tablet-slider-background-color);
+	}
+	.desktop-range-background {
+		background: none;
+		.gradient(@desktop-slider-background-color);
 	}
 }
 
