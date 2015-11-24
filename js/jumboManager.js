@@ -179,8 +179,9 @@ window.jumboManager = (function($){
 		return {
 			create: function(jumboJson) {
 				var imageUrl = jumboJson.image.url,	//replace this after finalizing json structure
-				
 				bgColor = jumboJson.image.bgColor,
+				mobileWidth = jumboJson.image.mobileWidth,
+				tabletWidth = jumboJson.image.tabletWidth,
 
 				_focusPreviewImage = function() {
 					$("."+CURRENT_JUMBO).removeClass(CURRENT_JUMBO);
@@ -208,100 +209,27 @@ window.jumboManager = (function($){
 				},
 
 				_renderControls = function() {
-					// Background color
 					_ui.$slideBgColor
 						.spectrum({
 							color: bgColor,
 							showAlpha: true,
 							showInput: true,
-							allowEmpty:true,
+							allowEmpty: true,
 							showPalette: true,
 							preferredFormat: "hex",
 							move: function(color) {
-								_ui.$background.find("."+IMAGE_CONTAINER)
+								ui.$background.find("."+IMAGE_CONTAINER)
 									.css("background-color", color.toRgbString())
 								;
-								bgColor = color.toRgbString();
+								Jumbos.getCurrentJumbo().setBgColor(color.toRgbString());
 							}
 						})
 					;
 
-					//Responsive Widths
 					_ui.$responsiveWidths
 						.slider({
-							range: true,
-							step: 100,
-							min: 300,
-							max: 1200,
-							values: [600, 900],
-							create: function(event, ui) {
-
-								var $mobileHandle = $(this).children(".ui-slider-handle").eq(0),
-								$tabletHandle = $(this).children(".ui-slider-handle").eq(1),
-								left = $mobileHandle.css("left"),
-								right = $tabletHandle.css("left"),
-								_tooltipPosition = {
-									my: "center bottom-10",
-									at: "center top"
-								};
-				
-								// Create two backgrounds besides jQuery UI's existing range background
-								$(this).children(".ui-slider-range")
-									.addClass(TABLET_RANGE_BACKGROUND)
-									.prop("title","tablet")
-									.tooltip({position: _tooltipPosition})
-								;
-
-								$(this)
-									.append($("<div></div>")
-										.addClass("ui-slider-range")
-										.addClass("ui-widget-header")
-										.addClass("ui-corner-all")
-										.addClass(MOBILE_RANGE_BACKGROUND)
-										.prop("title","mobile")
-										.tooltip({position: _tooltipPosition})
-										.css("left", 0)
-										.css("width", left)
-									)
-									.append($("<div></div>")
-										.addClass("ui-slider-range")
-										.addClass("ui-widget-header")
-										.addClass(DESKTOP_RANGE_BACKGROUND)
-										.prop("title","desktop")
-										.tooltip({position: _tooltipPosition})
-										.addClass("ui-corner-all")
-										.css("left", right)
-										.css("right", 0)
-									)
-								;
-							},
-							slide: function(event, ui) {
-								// Setting timeout because jquery ui renders range background
-								// AFTER the slide event. This is an easy but hacky way to handle
-								// API limitation, but I'll let it.. slide (see what I did there? :D)
-								// since it's purely aesthetic. If anything goes wrong in this tick,
-								// (ex: jQuery UI hanged and couldn't set ui-slider-range's width
-								// in 10 milliseconds), it will re-adjust itself on the next slide
-								// event
-								setTimeout(function(){
-									// Update second slider range background
-									var $mobileHandle = $(this).children(".ui-slider-handle").eq(0),
-									$tabletHandle = $(this).children(".ui-slider-handle").eq(1),
-									left = $mobileHandle.css("left"),
-									right = $tabletHandle.css("left");
-
-									$(this).find("."+MOBILE_RANGE_BACKGROUND)
-										.css("width", left)
-									;
-
-									$(this).find("."+DESKTOP_RANGE_BACKGROUND)
-										.css("left", right)
-									;
-								}.bind(this), 10);
-							}
+							values: [mobileWidth, tabletWidth]
 						})
-						.slider("pips", {rest: "label"});
-						// .slider("float", {suffix: "px"});
 					;
 				},
 
@@ -309,6 +237,30 @@ window.jumboManager = (function($){
 				return {
 					getImageUrl: function() {
 						return imageUrl;
+					},
+
+					getBgColor: function() {
+						return bgColor;
+					},
+
+					setBgColor: function(rgba) {
+						bgColor = rgba;
+					},
+
+					getMobileWidth: function() {
+						return mobileWidth;
+					},
+
+					setMobileWidth: function(_mobileWidth) {
+						mobileWidth = _mobileWidth;
+					},
+
+					getTabletWidth: function() {
+						return tabletWidth;
+					},
+
+					setTabletWidth: function(_tabletWidth) {
+						tabletWidth = _tabletWidth;
 					},
 
 					renderFocusImage: function() {
@@ -394,6 +346,116 @@ window.jumboManager = (function($){
 			});
 		})();
 
+		(function initCurrentSlideControls(options) {
+
+			// Background color
+			// spectrum overrides existing options when re-initialized,
+			// so the entire option rendering have to be done in Jumbo object's render method
+			// Leaving this here without options so it doesn't display an un-rendered textbox
+			// while page is waiting to fetch ajax response
+			ui.$slideBgColor.spectrum();
+
+			var MOBILE_VALUE_INDEX = 0,
+			TABLET_VALUE_INDEX = 1,
+			updateCustomRange = function(slider){
+				// Update second slider range background
+				var $mobileHandle = $(slider).children(".ui-slider-handle").eq(MOBILE_VALUE_INDEX),
+				$tabletHandle = $(slider).children(".ui-slider-handle").eq(TABLET_VALUE_INDEX),
+				left = $mobileHandle.css("left"),
+				right = $tabletHandle.css("left");
+
+				$(slider).find("."+MOBILE_RANGE_BACKGROUND)
+					.css("width", left)
+				;
+
+				$(slider).find("."+DESKTOP_RANGE_BACKGROUND)
+					.css("left", right)
+				;
+			},
+
+			updateJumboWidthsBySlider = function(values) {
+				Jumbos.getCurrentJumbo().setMobileWidth(values[MOBILE_VALUE_INDEX]);
+				Jumbos.getCurrentJumbo().setTabletWidth(values[TABLET_VALUE_INDEX]);
+			},
+
+			setCustomRange = function(slider) {
+				var $mobileHandle = $(slider).children(".ui-slider-handle").eq(MOBILE_VALUE_INDEX),
+				$tabletHandle = $(slider).children(".ui-slider-handle").eq(TABLET_VALUE_INDEX),
+				left = $mobileHandle.css("left"),
+				right = $tabletHandle.css("left"),
+				_tooltipPosition = {
+					my: "center bottom-10",
+					at: "center top"
+				};
+
+				// Create two backgrounds besides jQuery UI's existing range background
+				$(slider).children(".ui-slider-range")
+					.addClass(TABLET_RANGE_BACKGROUND)
+					.prop("title","tablet")
+					.tooltip({position: _tooltipPosition})
+				;
+
+				$(slider)
+					.append($("<div></div>")
+						.addClass("ui-slider-range")
+						.addClass("ui-widget-header")
+						.addClass("ui-corner-all")
+						.addClass(MOBILE_RANGE_BACKGROUND)
+						.prop("title","mobile")
+						.tooltip({position: _tooltipPosition})
+						.css("left", 0)
+						.css("width", left)
+					)
+					.append($("<div></div>")
+						.addClass("ui-slider-range")
+						.addClass("ui-widget-header")
+						.addClass(DESKTOP_RANGE_BACKGROUND)
+						.prop("title","desktop")
+						.tooltip({position: _tooltipPosition})
+						.addClass("ui-corner-all")
+						.css("left", right)
+						.css("right", 0)
+					)
+				;
+			};
+
+			//Responsive Widths
+			ui.$responsiveWidths
+				.slider({
+					range: true,
+					step: 100,
+					min: 300,
+					max: 1200,
+					values: [options.initMobileWidth, options.initTabletWidth],
+					create: function(event, ui) {
+						setCustomRange(this);
+					},
+					slide: function(event, ui) {
+						// Setting timeout because jquery ui renders range background
+						// AFTER the slide event. This is an easy but hacky way to handle
+						// API limitation, but I'll let it.. slide (see what I did there? :D)
+						// since it's purely aesthetic. If anything goes wrong in this tick,
+						// (ex: jQuery UI hanged and couldn't set ui-slider-range's width
+						// in 10 milliseconds), it will adjust itself in the change event below
+						setTimeout(function(){
+							updateCustomRange(this);
+						}.bind(this), 10);
+						updateJumboWidthsBySlider(ui.values);
+					},
+					change: function(event, ui) {
+						updateCustomRange(this);
+						updateJumboWidthsBySlider(ui.values);
+					}
+				})
+				.slider("pips", {rest: "label"});
+				// .slider("float", {suffix: "px"});
+			;
+		})({
+			initBgColor: options.initBgColor,
+			initMobileWidth: options.initMobileWidth,
+			initTabletWidth: options.initTabletWidth
+		});
+
 		(function initGridControls(options) {
 			ui.$mainCanvas.responsiveCanvas({
 				showGrid: options.initShowGrid,
@@ -410,9 +472,9 @@ window.jumboManager = (function($){
 			;
 
 			ui.$gridHGap.slider({
-				min: 5,
-				max: 70,
-				step: 5,
+				min: 10,
+				max: 80,
+				step: 10,
 				value: options.initGridHGap,
 				slide: function(event, _ui) {
 					var gridHGap = _ui.value;
@@ -421,9 +483,9 @@ window.jumboManager = (function($){
 			}).slider("pips", {suffix: "px"}).slider("float", {suffix: "px"});
 			
 			ui.$gridVGap.slider({
-				min: 5,
-				max: 70,
-				step: 5,
+				min: 10,
+				max: 80,
+				step: 10,
 				value: options.initGridVGap,
 				slide: function(event, _ui) {
 					var gridVGap = _ui.value;
@@ -516,7 +578,10 @@ window.jumboManager = (function($){
 					initShowGrid: true,
 					initGridHGap: 50,
 					initGridVGap: 50,
-					initBgMaxHeight: settings.maxBgHeight
+					initBgMaxHeight: settings.maxBgHeight,
+					initBgColor: "red",
+					initMobileWidth: 600,
+					initTabletWidth: 900
 				});
 
 				$.when(Jumbos.init(ui), Jumbo.init(ui)).done(function(){
