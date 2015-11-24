@@ -461,6 +461,10 @@ window.jumboManager = (function($){
 				.slider("pips", {rest: "label"});
 				// .slider("float", {suffix: "px"});
 			;
+
+			$(window).resize(function(){
+				updateCustomRange(ui.$responsiveWidths);
+			})
 		})({
 			initBgColor: options.initBgColor,
 			initMobileWidth: options.initMobileWidth,
