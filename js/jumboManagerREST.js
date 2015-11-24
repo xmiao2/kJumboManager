@@ -14,14 +14,10 @@ window.jumboManagerREST = (function($){
 			var jumbos = {
 				jumbos: [
 					{
-						image: "img/1.jpg",
-						/*
 						image: {
-							url: "asdf",
-							width: 0;
-							height: 0;
-						}
-						*/
+							url: "img/1.jpg",
+							bgColor: "lightblue"
+						},
 						buttons: [
 							{
 								x: 0,
@@ -34,71 +30,125 @@ window.jumboManagerREST = (function($){
 						]
 					},
 					{
-						image: "img/2.jpg"
+						image: {
+							url: "img/2.jpg",
+							bgColor: "lightblue"
+						}
 					},
 					{
-						image: "img/3.jpg"
+						image: {
+							url: "img/3.jpg",
+							bgColor: "lightblue"
+						}
 					},
 					{
-						image: "img/4.jpg"
+						image: {
+							url: "img/4.jpg",
+							bgColor: "lightblue"
+						}
 					},
 					{
-						image: "img/5.jpg"
+						image: {
+							url: "img/5.jpg",
+							bgColor: "lightblue"
+						}
 					},
 					{
-						image: "img/6.jpg"
+						image: {
+							url: "img/6.jpg",
+							bgColor: "lightblue"
+						}
 					},
 					{
-						image: "img/7.jpg"
+						image: {
+							url: "img/7.jpg",
+							bgColor: "lightblue"
+						}
 					},
 					{
-						image: "img/8.jpg"
+						image: {
+							url: "img/8.jpg",
+							bgColor: "lightblue"
+						}
 					},
 					{
-						image: "img/9.jpg"
+						image: {
+							url: "img/9.jpg",
+							bgColor: "lightblue"
+						}
 					},
 					{
-						image: "img/10.jpg"
+						image: {
+							url: "img/10.jpg",
+							bgColor: "lightblue"
+						}
 					},
 					{
-						image: "img/7.jpg"
+						image: {
+							url: "img/7.jpg",
+							bgColor: "lightblue"
+						}
 					},
 					{
-						image: "img/8.jpg"
+						image: {
+							url: "img/7.jpg",
+							bgColor: "lightblue"
+						}
 					},
 					{
-						image: "img/9.jpg"
+						image: {
+							url: "img/8.jpg",
+							bgColor: "lightblue"
+						}
 					},
 					{
-						image: "img/10.jpg"
+						image: {
+							url: "img/9.jpg",
+							bgColor: "lightblue"
+						}
 					},
 					{
-						image: "img/8.jpg"
+						image: {
+							url: "img/10.jpg",
+							bgColor: "lightblue"
+						}
 					},
 					{
-						image: "img/9.jpg"
+						image: {
+							url: "img/7.jpg",
+							bgColor: "lightblue"
+						}
 					},
 					{
-						image: "img/10.jpg"
+						image: {
+							url: "img/7.jpg",
+							bgColor: "lightblue"
+						}
 					},
 					{
-						image: "img/2.jpg"
+						image: {
+							url: "img/8.jpg",
+							bgColor: "lightblue"
+						}
 					},
 					{
-						image: "img/10.jpg"
+						image: {
+							url: "img/9.jpg",
+							bgColor: "lightblue"
+						}
 					},
 					{
-						image: "img/8.jpg"
+						image: {
+							url: "img/10.jpg",
+							bgColor: "lightblue"
+						}
 					},
 					{
-						image: "img/9.jpg"
+						image: {
+							url: "img/7.jpg",
+							bgColor: "lightblue"
+						}
 					},
-					{
-						image: "img/10.jpg"
-					},
-					{
-						image: "img/2.jpg"
-					}
 				]
 			}
 

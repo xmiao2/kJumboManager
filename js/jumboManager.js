@@ -28,11 +28,15 @@ window.jumboManager = (function($){
 		previewsId: "jumbomanager-previews",
 		controlsId: "jumbomanager-controls",
 		mainCanvasId: "jumbomanager-main-canvas",
+		backgroundId: "jumbomanager-background",
 		gridToggleId: "jumbomanager-grid-toggle",
 		gridVGapId: "jumbomanager-grid-vgap",
 		gridHGapId: "jumbomanager-grid-hgap",
+		slideBgColorId: "jumbomanager-slide-bg-color",
+		bgMaxHeightId: "jumbomanager-bg-max-height",
 		maxPreviewCount: 10,	// This values should be a even number, or else be reduced to a even number
-		minPreviewContainerWidth: 70
+		minPreviewContainerWidth: 70,
+		maxBgHeight: 400
 	},
 
 	// Inner classes
@@ -62,13 +66,13 @@ window.jumboManager = (function($){
 			return dfd.promise();
 		},
 
-		initRenderCanvasImage = function() {
+		initRenderBackgroundImage = function() {
 			_objects[INIT_RENDER_IDX].renderFocusImage();
 		},
 
 		renderPreviewImages = function() {				
 			$.each(_objects, function(idx, jumbo){
-				jumbo.renderPreviewImage();
+				jumbo.renderPreviewImage.apply(jumbo, null);
 			});
 		};
 		
@@ -92,7 +96,7 @@ window.jumboManager = (function($){
 				$.when.apply(this, promises).done(function(){
 					if(validate()) {
 						renderPreviewImages();
-						initRenderCanvasImage();
+						initRenderBackgroundImage();
 						dfd.resolve();
 					} else {
 						dfd.reject("Failed to validate jumbos");
@@ -107,54 +111,94 @@ window.jumboManager = (function($){
 	})(),
 
 	Jumbo = (function() {
-		var _ui = {};
+		var _ui = {},
+		_currentJumbo = {};
 		return {
 			create: function(jumboJson) {
-				var imageUrl = jumboJson.image,	//replace this after finalizing json structure
+				var imageUrl = jumboJson.image.url,	//replace this after finalizing json structure
 				
+				bgColor = jumboJson.image.bgColor,
+
+				_setAsCurrentJumbo = function() {
+					_currentJumbo = this;
+				},
+
 				_focusPreviewImage = function() {
 					$("."+CURRENT_JUMBO).removeClass(CURRENT_JUMBO);
 					$dom.addClass(CURRENT_JUMBO);
 				},
 
-				_renderCanvasImage = function() {
-					// Remove existing image
-					_ui.$canvas.find("."+IMAGE_CONTAINER).remove();
-					_ui.$canvas
-						.append(
+				_renderBackgroundImage = function() {
+					_ui.$background
+						.html(
 							getImageContainer(imageUrl)
 								.addClass(CANVAS_IMAGE_CONTAINER)
 						)
+						.find("img")
+							.css("maxHeight",settings.maxBgHeight)
 					;
 				},
 
 				_renderFocusImage = function() {
-					_renderCanvasImage();
+					_renderBackgroundImage();
+					_renderControls();
 					_focusPreviewImage();
+					_setAsCurrentJumbo.apply(this, arguments);
 				},
 
-				$dom = getImageContainer(imageUrl)
-					// .data(JUMBO, jumbo)
-					.on("click probe", function(event){
-						event.stopPropagation();
-						event.preventDefault();
-						_renderFocusImage();
-					})
-				;
+				_renderControls = function() {
+					_ui.$slideBgColor
+						.spectrum({
+							color: bgColor,
+							showAlpha: true,
+							showInput: true,
+							allowEmpty:true,
+							showPalette: true,
+							preferredFormat: "hex",
+							move: function(color) {
+								_ui.$background.find("."+IMAGE_CONTAINER)
+									.css("background-color", color.toRgbString())
+								;
+							}
+						})
+					;
+				},
+
+				$dom = getImageContainer(imageUrl);
 				return {
 					getImageUrl: function() {
 						return imageUrl;
 					},
 
 					renderFocusImage: function() {
-						return _renderFocusImage();
+						return _renderFocusImage.apply(this, arguments);
 					},
 					
+					renderBackgroundImage: function() {
+						return _renderBackgroundImage.apply(this, arguments);
+					},
+
 					renderPreviewImage: function() {
-						_ui.$previews.append($dom);
+						var self = this;
+						_ui.$previews
+							.append(
+								$dom
+									.off("click")
+									.on("click", function(){
+										event.stopPropagation();
+										event.preventDefault();
+										self.renderFocusImage();
+									})
+							)
+						;
 					}
 				}
 			},
+
+			getCurrentJumbo: function() {
+				return _currentJumbo;
+			},
+
 			init: function(ui) {
 				_ui = ui;
 				return $.Deferred().resolve().promise();
@@ -186,6 +230,24 @@ window.jumboManager = (function($){
 	},
 
 	initControls = function(options) {
+		(function initGeneralControls(options){
+			ui.$bgMaxHeight.slider({
+				min: 50,
+				max: 600,
+				step: 50,
+				value: options.initBgMaxHeight,
+				slide: function(event, _ui) {
+					var bgMaxHeight = _ui.value;
+					//TODO get current jumbo and update its max height
+					settings.maxBgHeight = bgMaxHeight;
+					Jumbo.getCurrentJumbo().renderFocusImage();
+				}
+			}).slider("pips", {suffix: "px"}).slider("float", {suffix: "px"});
+			
+		})({
+			initBgMaxHeight: options.initBgMaxHeight
+		});
+
 		(function initGridControls(options) {
 			ui.$mainCanvas.responsiveCanvas({
 				showGrid: options.initShowGrid,
@@ -211,6 +273,7 @@ window.jumboManager = (function($){
 					ui.$mainCanvas.responsiveCanvas({gridHGap: gridHGap, redrawGrid: true});
 				}
 			}).slider("pips", {suffix: "px"}).slider("float", {suffix: "px"});
+			
 			ui.$gridVGap.slider({
 				min: 5,
 				max: 70,
@@ -221,6 +284,7 @@ window.jumboManager = (function($){
 					ui.$mainCanvas.responsiveCanvas({gridVGap: gridVGap, redrawGrid: true});
 				}
 			}).slider("pips", {suffix: "px"}).slider("float", {suffix: "px"});
+		
 		})({
 			initShowGrid: options.initShowGrid,
 			initGridHGap: options.initGridHGap || $.responsiveCanvasDefaults.gridHGap,
@@ -305,7 +369,8 @@ window.jumboManager = (function($){
 				initControls({
 					initShowGrid: true,
 					initGridHGap: 50,
-					initGridVGap: 50
+					initGridVGap: 50,
+					initBgMaxHeight: settings.maxBgHeight
 				});
 
 				$.when(Jumbos.init(ui), Jumbo.init(ui)).done(function(){
