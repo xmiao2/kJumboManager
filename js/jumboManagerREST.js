@@ -15,8 +15,8 @@ window.jumboManagerREST = (function($){
 				jumbos: [
 					{
 						image: {
-							url: "img/1.jpg",
-							bgColor: "#90a5c8",
+							url: "img/Ani-Nov-10-D.jpg",
+							bgColor: "#ffffff",
 							mobileWidth: 600,
 							tabletWidth: 900
 						},
@@ -33,7 +33,7 @@ window.jumboManagerREST = (function($){
 					},
 					{
 						image: {
-							url: "img/2.jpg",
+							url: "img/Bridal-D.jpg",
 							bgColor: "#aa7777",
 							mobileWidth: 400,
 							tabletWidth: 900
@@ -41,7 +41,7 @@ window.jumboManagerREST = (function($){
 					},
 					{
 						image: {
-							url: "img/3.jpg",
+							url: "img/Clearance-D.jpg",
 							bgColor: "rgba(0,0,0,0.8)",
 							mobileWidth: 500,
 							tabletWidth: 700
@@ -49,7 +49,15 @@ window.jumboManagerREST = (function($){
 					},
 					{
 						image: {
-							url: "img/4.jpg",
+							url: "img/Holiday-Nov-10-D.jpg",
+							bgColor: "#791516",
+							mobileWidth: 600,
+							tabletWidth: 900
+						}
+					},
+					{
+						image: {
+							url: "img/LG-Nov-10-D.jpg",
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
@@ -57,7 +65,7 @@ window.jumboManagerREST = (function($){
 					},
 					{
 						image: {
-							url: "img/5.jpg",
+							url: "img/Pandora-Nov-10-D.jpg",
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
@@ -65,16 +73,8 @@ window.jumboManagerREST = (function($){
 					},
 					{
 						image: {
-							url: "img/6.jpg",
-							bgColor: "lightblue",
-							mobileWidth: 600,
-							tabletWidth: 900
-						}
-					},
-					{
-						image: {
-							url: "img/7.jpg",
-							bgColor: "lightblue",
+							url: "img/Pre-Black-Nov-19-D.jpg",
+							bgColor: "#791516",
 							mobileWidth: 600,
 							tabletWidth: 900
 						}

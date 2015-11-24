@@ -40,6 +40,9 @@ window.jumboManager = (function($){
 		prevSlideId: "jumbomanager-prevSlide",
 		nextSlideId: "jumbomanager-nextSlide",
 		responsiveWidthsId: "jumbomanager-responsive-widths",
+		desktopImageSrcId: "jumbomanager-desktop-image-src",
+		tabletImageSrcId: "jumbomanager-tablet-image-src",
+		mobileImageSrcId: "jumbomanager-mobile-image-src",
 		maxPreviewCount: 10,	// This values should be a even number, or else be reduced to a even number
 		minPreviewContainerWidth: 70,
 		maxBgHeight: 400
@@ -231,6 +234,25 @@ window.jumboManager = (function($){
 							values: [mobileWidth, tabletWidth]
 						})
 					;
+
+					_ui.$desktopImageSrc
+						.val(imageUrl)
+					;
+				},
+
+				_renderPreviewImage = function() {
+					var self = this;
+					_ui.$previews
+						.append(
+							$dom
+								.off("click")
+								.on("click", function(){
+									event.stopPropagation();
+									event.preventDefault();
+									self.renderFocusImage();
+								})
+						)
+					;
 				},
 
 				$dom = getImageContainer(imageUrl);
@@ -272,18 +294,7 @@ window.jumboManager = (function($){
 					},
 
 					renderPreviewImage: function() {
-						var self = this;
-						_ui.$previews
-							.append(
-								$dom
-									.off("click")
-									.on("click", function(){
-										event.stopPropagation();
-										event.preventDefault();
-										self.renderFocusImage();
-									})
-							)
-						;
+						return _renderPreviewImage.apply(this, arguments);
 					}
 				}
 			},
