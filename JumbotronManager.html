@@ -62,21 +62,27 @@
 							<input id="jumbomanager-slide-bg-color" type="text"/>
 						</div>
 						<div class="form-group">
-							<label>Desktop Image Src</label>
-							<input id="jumbomanager-desktop-image-src" type="text" class="form-control" disabled/>
+							<label>Desktop Image Location</label>
+							<input type="file" id="jumbomanager-desktop-image-upload" value="upload" class="hidden"/>
+							<small>[<a onclick="getElementById('jumbomanager-desktop-image-upload').click();" href="javascript:void(0);">Upload</a>]</small>
+							<input id="jumbomanager-desktop-image-src" type="text" class="form-control" placeholder="Not available" disabled/>
 						</div>
 						<div class="form-group">
-							<label>Tablet Image Src</label>
+							<label>Tablet Image Location</label>
+							<input type="file" id="jumbomanager-tablet-image-upload" value="upload" class="hidden"/>
+							<small>[<a onclick="getElementById('jumbomanager-tablet-image-upload').click();" href="javascript:void(0);">Upload</a>]</small>
 							<input id="jumbomanager-tablet-image-src" type="text" class="form-control" placeholder="Not available" disabled/>
 						</div>
 						<div class="form-group">
-							<label>Mobile Image Src</label>
+							<label>Mobile Image Location</label>
+							<input type="file" id="jumbomanager-mobile-image-upload" value="upload" class="hidden"/>
+							<small>[<a onclick="getElementById('jumbomanager-mobile-image-upload').click();" href="javascript:void(0);">Upload</a>]</small>
 							<input id="jumbomanager-mobile-image-src" type="text" class="form-control" placeholder="Not available" disabled/>
 						</div>
 						<div class="form-group">
 							<div class="slider-container">
 								<label for="jumbomanager-bg-max-height">Responsive Widths (px)</label>
-								<div><a class="" id="jumbomanager-apply-all-responsive-widths" href="javascript:void(0);"><small>Apply setting to all slides</small></a></div>
+								<small>[<a class="" id="jumbomanager-apply-all-responsive-widths" href="javascript:void(0);">Apply settings to all slides</a>]</small>
 								<div id="jumbomanager-responsive-widths"></div>
 							</div>
 						</div>

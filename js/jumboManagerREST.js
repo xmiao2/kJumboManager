@@ -3,7 +3,7 @@
  */
 "use strict";
 
-window.jumboManagerREST = (function($){
+window.jumboManagerREST = window.jumboManagerREST || (function($){
 
 	var delay = 250;	// Simulate how good the latency is
 
@@ -17,7 +17,7 @@ window.jumboManagerREST = (function($){
 						image: {
 							url: "img/Ani-Nov-10-D.jpg",
 							bgColor: "#ffffff",
-							mobileWidth: 600,
+							mobileWidth: 700,
 							tabletWidth: 900
 						},
 						buttons: [
@@ -81,7 +81,7 @@ window.jumboManagerREST = (function($){
 					},
 					{
 						image: {
-							url: "img/8.jpg",
+							url: "img/invalidurl.jpg",
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
@@ -199,6 +199,18 @@ window.jumboManagerREST = (function($){
 			}, delay);
 
 			return dfd;
+		},
+
+		ajaxUploadImage: function(file) {
+			// var dfd = $.Deferred();
+
+			// var response
+
+			// setTimeout(function(){
+			// 	dfd.resolve(response.);
+			// }, delay);
+
+			// return dfd;
 		}
 	}
 })(jQuery);

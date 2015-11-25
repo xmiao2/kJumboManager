@@ -44,6 +44,10 @@ window.jumboManager = (function($){
 		desktopImageSrcId: "jumbomanager-desktop-image-src",
 		tabletImageSrcId: "jumbomanager-tablet-image-src",
 		mobileImageSrcId: "jumbomanager-mobile-image-src",
+		desktopImageUploadId: "jumbomanager-desktop-image-upload",
+		tabletImageUploadId: "jumbomanager-tablet-image-upload",
+		mobileImageUploadId: "jumbomanager-mobile-image-upload",
+		imageNotFoundUrl: "img/image_not_found.jpg",
 		maxPreviewCount: 10,	// This values should be a even number, or else be reduced to a even number
 		minPreviewContainerWidth: 70,
 		maxBgHeight: 400
@@ -411,6 +415,7 @@ window.jumboManager = (function($){
 			ui.$slideBgColor.spectrum();
 
 			var
+			// Responsive width private methods
 			updateCustomRange = function(slider){
 				// Update second slider range background
 				var $mobileHandle = $(slider).children(".ui-slider-handle").eq(MOBILE_VALUE_INDEX),
@@ -508,9 +513,9 @@ window.jumboManager = (function($){
 			// Responsive Width responding to window resize
 			$(window).resize(function(){
 				updateCustomRange(ui.$responsiveWidths);
-			})
+			});
 
-			// Apply responsive width settings to all
+			// Button that applies responsive width settings to all slides
 			ui.$applyAllWidth.on("click", function(event){
 
 				Jumbos.applyAllWidths([
@@ -523,7 +528,11 @@ window.jumboManager = (function($){
 					content: "Settings applied to all slides",
 					showClose: false
 				})
-			})
+			});
+
+			ui.$desktopImageUpload.on("change", function(event){
+				debugger;
+			});
 		})({
 			initBgColor: options.initBgColor,
 			initMobileWidth: options.initMobileWidth,
@@ -631,6 +640,10 @@ window.jumboManager = (function($){
 			.addClass(IMAGE_CONTAINER)
 			.append($("<img></img>")
 				.prop("src", imageUrl)
+				.error(function(){
+					// Replace image source if 404'd
+					$(this).prop("src", settings.imageNotFoundUrl);
+				})
 			)
 	};
 
