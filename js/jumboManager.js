@@ -40,6 +40,7 @@ window.jumboManager = (function($){
 		prevSlideId: "jumbomanager-prevSlide",
 		nextSlideId: "jumbomanager-nextSlide",
 		responsiveWidthsId: "jumbomanager-responsive-widths",
+		applyAllWidthId: "jumbomanager-apply-all-responsive-widths",
 		desktopImageSrcId: "jumbomanager-desktop-image-src",
 		tabletImageSrcId: "jumbomanager-tablet-image-src",
 		mobileImageSrcId: "jumbomanager-mobile-image-src",
@@ -47,6 +48,9 @@ window.jumboManager = (function($){
 		minPreviewContainerWidth: 70,
 		maxBgHeight: 400
 	},
+
+	MOBILE_VALUE_INDEX = 0,
+	TABLET_VALUE_INDEX = 1,
 
 	// Inner classes
 	Jumbos = (function() {
@@ -117,6 +121,16 @@ window.jumboManager = (function($){
 			_objects[prevIndex].renderFocusImage();
 		},
 
+		_applyAllWidths = function(widths) {
+			var mobileWidth = widths[MOBILE_VALUE_INDEX],
+			tabletWidth = widths[TABLET_VALUE_INDEX];
+
+			$.each(_objects, function(idx, jumbo){
+				jumbo.setMobileWidth(mobileWidth);
+				jumbo.setTabletWidth(tabletWidth);
+			});
+		},
+
 		initRenderBackgroundImage = function() {
 			_renderFirstJumbo();
 		},
@@ -150,6 +164,10 @@ window.jumboManager = (function($){
 
 			renderPrevJumbo: function() {
 				return _renderPrevJumbo();
+			},
+
+			applyAllWidths: function(widths) {
+				return _applyAllWidths(widths);
 			},
 
 			init: function(ui) {
@@ -247,8 +265,7 @@ window.jumboManager = (function($){
 							$dom
 								.off("click")
 								.on("click", function(){
-									event.stopPropagation();
-									event.preventDefault();
+									_ui.$previews.focus();
 									self.renderFocusImage();
 								})
 						)
@@ -348,6 +365,33 @@ window.jumboManager = (function($){
 		});
 
 		(function initSlideControls(options) {
+
+			var bindSlideKeys = function(event) {
+
+				switch(event.which) {
+					case 37: // left
+						Jumbos.renderPrevJumbo();
+						break;
+					case 39:
+						Jumbos.renderNextJumbo();
+						break;
+					default:
+						return;
+				}
+
+				event.preventDefault();
+			};
+
+			ui.$canvas
+				.prop("tabindex", "-1")
+				.keydown(bindSlideKeys)
+			;
+
+			ui.$previews
+				.prop("tabindex", "-1")
+				.keydown(bindSlideKeys)
+			;
+
 			ui.$prevSlide.on("click", function(){
 				Jumbos.renderPrevJumbo();
 			});
@@ -366,8 +410,7 @@ window.jumboManager = (function($){
 			// while page is waiting to fetch ajax response
 			ui.$slideBgColor.spectrum();
 
-			var MOBILE_VALUE_INDEX = 0,
-			TABLET_VALUE_INDEX = 1,
+			var
 			updateCustomRange = function(slider){
 				// Update second slider range background
 				var $mobileHandle = $(slider).children(".ui-slider-handle").eq(MOBILE_VALUE_INDEX),
@@ -462,8 +505,24 @@ window.jumboManager = (function($){
 				// .slider("float", {suffix: "px"});
 			;
 
+			// Responsive Width responding to window resize
 			$(window).resize(function(){
 				updateCustomRange(ui.$responsiveWidths);
+			})
+
+			// Apply responsive width settings to all
+			ui.$applyAllWidth.on("click", function(event){
+
+				Jumbos.applyAllWidths([
+					Jumbos.getCurrentJumbo().getMobileWidth(),
+					Jumbos.getCurrentJumbo().getTabletWidth()
+				]);
+
+				xmBootstrapAlert.alert({
+					fade: true,
+					content: "Settings applied to all slides",
+					showClose: false
+				})
 			})
 		})({
 			initBgColor: options.initBgColor,
@@ -560,6 +619,9 @@ window.jumboManager = (function($){
 			delay: 150,
 			start: function(event, ui) {
 				ui.placeholder.width(ui.helper.width());
+			},
+			stop: function(event, ui) {
+				debugger;
 			}
 		});	
 	},

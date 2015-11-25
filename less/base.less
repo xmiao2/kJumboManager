@@ -76,6 +76,14 @@ body {
 	transform: translateY(-50%);
 }
 
+.horizontal-align(@position) {
+	position: @position;
+	left: 50%;
+	-webkit-transform: translateX(-50%);
+	-ms-transform: translateX(-50%);
+	transform: translateX(-50%);
+}
+
 .gradient (@startColor: #eee, @endColor: @startColor * 0.8) {
 	background-color: @startColor;
 	background: -webkit-gradient(linear, left top, left bottom, from(@startColor), to(@endColor));
