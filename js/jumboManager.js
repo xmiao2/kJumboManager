@@ -32,6 +32,7 @@ window.jumboManager = (function($){
 		controlsId: "jumbomanager-controls",
 		mainCanvasId: "jumbomanager-main-canvas",
 		backgroundId: "jumbomanager-background",
+		previewId: "jumbomanager-preview",
 		gridToggleId: "jumbomanager-grid-toggle",
 		gridVGapId: "jumbomanager-grid-vgap",
 		gridHGapId: "jumbomanager-grid-hgap",
@@ -47,6 +48,16 @@ window.jumboManager = (function($){
 		desktopImageUploadId: "jumbomanager-desktop-image-upload",
 		tabletImageUploadId: "jumbomanager-tablet-image-upload",
 		mobileImageUploadId: "jumbomanager-mobile-image-upload",
+
+		overlayId: "jumbomanager-overlay",
+
+		buttonsId: "jumbomanager-buttons",
+		buttonContentId: "jumbomanager-button-content",
+		buttonHAlignId: "jumbomanager-button-horizontal-align",
+		buttonVAlignId: "jumbomanager-button-vertical-align",
+
+		labelsId: "jumbomanager-labels",
+
 		imageNotFoundUrl: "img/image_not_found.jpg",
 		maxPreviewCount: 10,	// This values should be a even number, or else be reduced to a even number
 		minPreviewContainerWidth: 70,
@@ -55,6 +66,9 @@ window.jumboManager = (function($){
 
 	MOBILE_VALUE_INDEX = 0,
 	TABLET_VALUE_INDEX = 1,
+
+	PRIMARY_BUTTON_INDEX = 0,
+	SECONDARY_BUTTON_INDEX = 1,
 
 	// Inner classes
 	Jumbos = (function() {
@@ -207,6 +221,9 @@ window.jumboManager = (function($){
 				bgColor = jumboJson.image.bgColor,
 				mobileWidth = jumboJson.image.mobileWidth,
 				tabletWidth = jumboJson.image.tabletWidth,
+				hAlign = jumboJson.button.hAlign,
+				vAlign = jumboJson.button.vAlign,
+				buttons = jumboJson.button.buttons,
 
 				_focusPreviewImage = function() {
 					$("."+CURRENT_JUMBO).removeClass(CURRENT_JUMBO);
@@ -216,7 +233,7 @@ window.jumboManager = (function($){
 				_renderBackgroundImage = function() {
 					_ui.$background
 						.html(
-							getImageContainer(imageUrl)
+							getImageContainer(imageUrl, _renderOverlay)
 								.addClass(CANVAS_IMAGE_CONTAINER)
 								.css("background-color", bgColor)
 						)
@@ -230,7 +247,37 @@ window.jumboManager = (function($){
 					_renderBackgroundImage();
 					_renderControls();
 					_focusPreviewImage();
+					_renderButtons();
 					_ui.$mainCanvas.responsiveCanvas({redrawGrid: true, resize: true});
+				},
+
+				_renderButtons = function() {
+
+					_ui.$buttons.empty();
+
+					$.each(buttons, function(idx, button){
+						if(button.visible){
+							_ui.$buttons
+								.css({
+									display: "inline-block",
+									position: "absolute",
+									left: hAlign,
+									top: vAlign,
+									transform: "translate(-" + hAlign + ", -" + vAlign + ")"
+								})
+								.append($("<div class='btn btn-primary btn-block'></div>")
+									.html(button.text)
+								)
+							;
+						}
+					});
+				},
+
+				_renderOverlay = function() {
+					_ui.$overlay.css({
+						margin: "auto",
+						width: _ui.$background.find("img").width()
+					});
 				},
 
 				_renderControls = function() {
@@ -260,6 +307,14 @@ window.jumboManager = (function($){
 					_ui.$desktopImageSrc
 						.val(imageUrl)
 					;
+
+					if(buttons[PRIMARY_BUTTON_INDEX].visible && buttons[SECONDARY_BUTTON_INDEX].visible) {
+						_ui.$buttonContent.selectpicker("val", "all");
+					} else if(buttons[PRIMARY_BUTTON_INDEX].visible) {
+						_ui.$buttonContent.selectpicker("val", "primary");
+					} else {
+						_ui.$buttonContent.selectpicker("val", "none");
+					}
 				},
 
 				_renderPreviewImage = function() {
@@ -306,8 +361,20 @@ window.jumboManager = (function($){
 						tabletWidth = _tabletWidth;
 					},
 
+					setButtonVisibility: function(idx, visible) {
+						buttons[idx].visible = visible;
+					},
+
 					renderFocusImage: function() {
 						return _renderFocusImage.apply(this, arguments);
+					},
+
+					renderButtons: function() {
+						return _renderButtons.apply(this, arguments);
+					},
+
+					renderOverlay: function() {
+						return _renderOverlay.apply(this, arguments);
 					},
 					
 					renderBackgroundImage: function() {
@@ -348,6 +415,10 @@ window.jumboManager = (function($){
 		ui.$mainCanvas.responsiveCanvas({
 			showGrid: false
 		});
+
+		$(window).resize(function(){
+			Jumbos.getCurrentJumbo().renderOverlay();
+		});
 	},
 
 	initControls = function(options) {
@@ -373,10 +444,10 @@ window.jumboManager = (function($){
 			var bindSlideKeys = function(event) {
 
 				switch(event.which) {
-					case 37: // left
+					case 37: // left key
 						Jumbos.renderPrevJumbo();
 						break;
-					case 39:
+					case 39: // right key
 						Jumbos.renderNextJumbo();
 						break;
 					default:
@@ -539,6 +610,42 @@ window.jumboManager = (function($){
 			initTabletWidth: options.initTabletWidth
 		});
 
+		(function initComponentControls(options){
+			ui.$buttonContent.selectpicker({
+				style: "btn-primary"
+			}).on("change", function(event){
+				switch($(this).val()) {
+					case 'none':
+						Jumbos.getCurrentJumbo().setButtonVisibility(PRIMARY_BUTTON_INDEX, false);
+						Jumbos.getCurrentJumbo().setButtonVisibility(SECONDARY_BUTTON_INDEX, false);
+						break;
+					case 'primary':
+						Jumbos.getCurrentJumbo().setButtonVisibility(PRIMARY_BUTTON_INDEX, true);
+						Jumbos.getCurrentJumbo().setButtonVisibility(SECONDARY_BUTTON_INDEX, false);
+						break;
+					case 'all':
+						Jumbos.getCurrentJumbo().setButtonVisibility(PRIMARY_BUTTON_INDEX, true);
+						Jumbos.getCurrentJumbo().setButtonVisibility(SECONDARY_BUTTON_INDEX, true);
+						break;
+				}
+				Jumbos.getCurrentJumbo().renderButtons();
+			});
+
+			ui.$buttonHAlign.selectpicker({
+				style: "btn-default"
+			}).on("change", function(event){
+				Jumbos.getCurrentJumbo().renderButtons();
+			});
+
+			ui.$buttonVAlign.selectpicker({
+				style: "btn-default"
+			}).on("change", function(event){
+				Jumbos.getCurrentJumbo().renderButtons();
+			});
+		})({
+
+		});
+
 		(function initGridControls(options) {
 			ui.$mainCanvas.responsiveCanvas({
 				showGrid: options.initShowGrid,
@@ -635,11 +742,12 @@ window.jumboManager = (function($){
 		});	
 	},
 
-	getImageContainer = function(imageUrl) {
+	getImageContainer = function(imageUrl, loadCallback) {
 		return $("<div></div>")
 			.addClass(IMAGE_CONTAINER)
 			.append($("<img></img>")
 				.prop("src", imageUrl)
+				.on("load", loadCallback)
 				.error(function(){
 					// Replace image source if 404'd
 					$(this).prop("src", settings.imageNotFoundUrl);

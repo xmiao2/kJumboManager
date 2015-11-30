@@ -14,6 +14,9 @@
 		<!-- FontAwesome -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
+		<!-- Bootstrap Select -->
+		<link rel="stylesheet" href="lib/bootstrap-select/css/bootstrap-select.min.css">
+
 		<!-- Slick Slider -->
 		<!-- <link rel="stylesheet" href="lib/slick/slick.css">
 		<link rel="stylesheet" href="lib/slick/slick-theme.css"> -->
@@ -32,8 +35,14 @@
 					<div id="jumbomanager-canvas">
 						<canvas id="jumbomanager-main-canvas"></canvas>
 						<span class="slideButton" id="jumbomanager-prevSlide"><i class="fa fa-5x fa-angle-left"></i></span>
-						<div id="jumbomanager-background">
-							<!-- Canvas image container populated by JS -->
+						<div id="jumbomanager-preview">
+							<div id="jumbomanager-background">
+								<!-- Canvas image container populated by JS -->
+							</div>
+							<div id="jumbomanager-overlay">
+								<div id="jumbomanager-labels"></div>
+								<div id="jumbomanager-buttons"></div>
+							</div>
 						</div>
 						<span class="slideButton" id="jumbomanager-nextSlide"><i class="fa fa-5x fa-angle-right"></i></span>
 					</div>
@@ -56,25 +65,33 @@
 						</div>
 					</div>
 					<div class="control-group">
-						<h4>Current Slide</h4>
+						<h4>Current Slide - General</h4>
 						<div class="form-group">
 							<label>Background Color&nbsp;</label>
 							<input id="jumbomanager-slide-bg-color" type="text"/>
 						</div>
 						<div class="form-group">
-							<label>Desktop Image Location</label>
+							<label>Theme Color&nbsp;</label>
+							<!-- <input id="jumbomanager-slide-bg-color" type="text"/> -->TODO
+						</div>
+						<div class="form-group">
+							<label>URL&nbsp;</label>
+							<!-- <input id="jumbomanager-slide-bg-color" type="text"/> -->TODO
+						</div>
+						<div class="form-group">
+							<label for="jumbomanager-desktop-image-upload">Desktop Image Location</label>
 							<input type="file" id="jumbomanager-desktop-image-upload" value="upload" class="hidden"/>
 							<small>[<a onclick="getElementById('jumbomanager-desktop-image-upload').click();" href="javascript:void(0);">Upload</a>]</small>
 							<input id="jumbomanager-desktop-image-src" type="text" class="form-control" placeholder="Not available" disabled/>
 						</div>
 						<div class="form-group">
-							<label>Tablet Image Location</label>
+							<label for="jumbomanager-tablet-image-upload">Tablet Image Location</label>
 							<input type="file" id="jumbomanager-tablet-image-upload" value="upload" class="hidden"/>
 							<small>[<a onclick="getElementById('jumbomanager-tablet-image-upload').click();" href="javascript:void(0);">Upload</a>]</small>
 							<input id="jumbomanager-tablet-image-src" type="text" class="form-control" placeholder="Not available" disabled/>
 						</div>
 						<div class="form-group">
-							<label>Mobile Image Location</label>
+							<label for="jumbomanager-mobile-image-upload">Mobile Image Location</label>
 							<input type="file" id="jumbomanager-mobile-image-upload" value="upload" class="hidden"/>
 							<small>[<a onclick="getElementById('jumbomanager-mobile-image-upload').click();" href="javascript:void(0);">Upload</a>]</small>
 							<input id="jumbomanager-mobile-image-src" type="text" class="form-control" placeholder="Not available" disabled/>
@@ -87,6 +104,84 @@
 							</div>
 						</div>
 					</div>
+					<div class="control-group">
+						<h4>Current Slide - Button</h4>
+						<div class="form-group">
+							<h5>Content</h5>
+							<select id="jumbomanager-button-content" data-width="100%">
+								<option value="none">None</option>
+								<option value="primary">Primary</option>
+								<option value="all">Primary + Secondary</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<h5>Horizontal Alignment <span class="tooltip-container" title="Only used for desktop. Buttons will be automatically centered for tablet and mobile"></span></h5>
+							<select id="jumbomanager-button-horizontal-align" data-width="100%">
+								<option value="left">Left</option>
+								<option value="center">Center</option>
+								<option value="right">Right</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<h5>Vertical Alignment <span class="tooltip-container" title="Only used for desktop. Buttons will be automatically placed in bottom for tablet and mobile"></span></h5>
+							<select id="jumbomanager-button-vertical-align" data-width="100%">
+								<option value="top">Top</option>
+								<option value="middle">Middle</option>
+								<option value="bottom">Bottom</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<h5>Primary Button</h5>
+							<div class="form-group sub-form-group">
+								<label for="jumbomanager-button-primary-text">Text</label>
+								<input label="jumbomanager-button-primary-text" type="text" class="form-control" placeholder="TODO"/>
+							</div>
+							<div class="form-group sub-form-group">
+								<label for="jumbomanager-button-primary-url">Url</label>
+								<input label="jumbomanager-button-primary-url" type="text" class="form-control" placeholder="TODO"/>
+							</div>
+							<div class="form-group sub-form-group">
+								<label for="jumbomanager-button-primary-color">Color</label>
+								<input label="jumbomanager-button-primary-color" type="text" class="form-control" placeholder="TODO"/>
+							</div>
+						</div>
+						<div class="form-group">
+							<h5>Secondary Button</h5>
+							<div class="form-group sub-form-group">
+								<label for="jumbomanager-button-secondary-text">Text</label>
+								<input label="jumbomanager-button-secondary-text" type="text" class="form-control" placeholder="TODO"/>
+							</div>
+							<div class="form-group sub-form-group">
+								<label for="jumbomanager-button-secondary-url">Url</label>
+								<input label="jumbomanager-button-secondary-url" type="text" class="form-control" placeholder="TODO"/>
+							</div>
+							<div class="form-group sub-form-group">
+								<label for="jumbomanager-button-secondary-color">Color</label>
+								<input label="jumbomanager-button-secondary-color" type="text" class="form-control" placeholder="TODO"/>
+							</div>
+						</div>
+					</div>
+					<!-- <div class="control-group">
+						<h4>Current Slide - Label Layout</h4>
+						<div class="form-group">
+							<h5>Content</h5>
+							<label class="radio-inline"><input type="radio" name="labelContentRadio">None</label>
+							<label class="radio-inline"><input type="radio" name="labelContentRadio">Main</label>
+							<label class="radio-inline"><input type="radio" name="labelContentRadio">Main + Sub</label>
+						</div>
+						<div class="form-group">
+							<h5>Horizontal Alignment</h5>
+							<label class="radio-inline"><input type="radio" name="labelHorizontalRadio">Left</label>
+							<label class="radio-inline"><input type="radio" name="labelHorizontalRadio">Center</label>
+							<label class="radio-inline"><input type="radio" name="labelHorizontalRadio">Right</label>
+						</div>
+						<div class="form-group">
+							<h5>Vertical Alignment</h5>
+							<label class="radio-inline"><input type="radio" name="labelVerticalRadio">Top</label>
+							<label class="radio-inline"><input type="radio" name="labelVerticalRadio">Middle</label>
+							<label class="radio-inline"><input type="radio" name="labelVerticalRadio">Bottom</label>
+						</div>
+					</div> -->
 					<div class="control-group">
 						<h4>Grid</h4>
 						<div class="checkbox">
@@ -128,6 +223,9 @@
 
 		<!-- Specturm -->
 		<script src="lib/spectrum/spectrum.js"></script>
+
+		<!-- Bootstrap Select -->
+		<script src="lib/bootstrap-select/js/bootstrap-select.min.js"></script>
 
 		<!-- Javascripts -->
 		<script src="js/jsArrayMove.js"></script>

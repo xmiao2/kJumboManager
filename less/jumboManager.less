@@ -9,21 +9,13 @@
 		border: 1px solid black;
 	}
 
-	/*.previews-container {
-		@preview-image-padding: 1rem;
-
-		.image-container {
-			padding: @preview-image-padding @preview-image-padding / 2;
-		}
-
-		.image-container:first-child {
-			padding-left: @preview-image-padding;
-		}
-
-		.image-container:last-child {
-			padding-right: @preview-image-padding;
-		}
-	}*/
+	.component {
+		background-color: @white;
+		border: 1px solid @black;
+		border-radius: 4px;
+		text-align: center;
+		cursor: move;
+	}
 
 	.slideButton {
 		.vertical-align(absolute);
@@ -44,6 +36,23 @@
 	.slideButton#jumbomanager-nextSlide {
 		right: 1rem;
 	}
+
+	.sub-form-group {
+		padding-left: 2rem;
+	}
+
+	.tooltip-container {
+		border: 1px solid @black;
+		font-weight: bold;
+		color: @black;
+		cursor: help;
+		display: inline-block;
+		padding: 0rem 0.25rem;
+		border-radius: 2rem;
+		&:after {
+			content: "?";
+		}
+	}
 }
 
 #jumbomanager-canvas {
@@ -54,6 +63,7 @@
 	}
 }
 
+#jumbomanager-overlay,
 #jumbomanager-main-canvas {
 	position: absolute;
 	margin: auto;
@@ -63,13 +73,18 @@
 	bottom: 0;
 }
 
-#jumbomanager-background {
+#jumbomanager-preview {
 	text-align: center;
 	width: 100%;
 	z-index: -1000;
 	img {
 		max-width: 100%;
 	}
+}
+
+#jumbomanager-background {
+	width: 100%;
+	z-index: -1000;
 }
 
 #jumbomanager-previews {
@@ -101,12 +116,11 @@
 		margin-left: -1.5rem;	// temp
 	}
 	.control-group {
-		padding: 0 3rem 2rem 3rem;
+		padding: 0 3rem;
 		border-bottom: 1px solid black; // temp
 	}
 	.slider-container {
-		margin-left: auto;
-		margin-right: auto;
+		margin: 0 auto 4rem;
 	}
 	.mobile-range-background {
 		background: none;
@@ -120,15 +134,19 @@
 		background: none;
 		.gradient(@desktop-slider-background-color);
 	}
+	.component {
+		display: inline-block;
+		padding: 0 2rem;
+	}
 }
 
 @media (min-width: @tablet-width) {
-	#jumbomanager-background {
+	#jumbomanager-preview {
 		/*ghostly*/
-		.ghostfix;
-		height: 100%;
+		// .ghostfix;
+		.vertical-align(absolute);
 	}
-	#jumbomanager-background img, #jumbomanager-canvas,
+	#jumbomanager-preview img, #jumbomanager-canvas,
 	#jumbomanager-previews, #jumbomanager-previews .image-container,
 	#jumbomanager-previews .image-container img {
 		height: 100%;

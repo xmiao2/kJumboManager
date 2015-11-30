@@ -20,16 +20,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							mobileWidth: 700,
 							tabletWidth: 900
 						},
-						buttons: [
-							{
-								x: 0,
-								y: 0,
-								width: 0,
-								height: 0,
-								text: "Test",
-								url: "#"
-							}
-						]
+						button: {
+							hAlign: "75%",
+							vAlign: "70%", 
+							buttons: [
+								{
+									visible: true,
+									text: "primary",
+									url: "#",
+									color: "#ffffff"
+								},
+								{
+									visible: true,
+									text: "secondary",
+									url: "#",
+									color: "#ffffff"
+								}
+							]
+						}
 					},
 					{
 						image: {
@@ -37,6 +45,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							bgColor: "#aa7777",
 							mobileWidth: 400,
 							tabletWidth: 900
+						},
+						button: {
+							hAlign: "50%",
+							vAlign: "50%", 
+							buttons: [
+								{
+									visible: true,
+									text: "primary",
+									url: "#",
+									color: "#ffffff"
+								},
+								{
+									visible: false,
+									text: "secondary",
+									url: "#",
+									color: "#ffffff"
+								}
+							]
 						}
 					},
 					{
@@ -45,6 +71,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							bgColor: "rgba(0,0,0,0.8)",
 							mobileWidth: 500,
 							tabletWidth: 700
+						},
+						button: {
+							hAlign: "50%",
+							vAlign: "50%", 
+							buttons: [
+								{
+									visible: true,
+									text: "primary",
+									url: "#",
+									color: "#ffffff"
+								},
+								{
+									visible: true,
+									text: "secondary",
+									url: "#",
+									color: "#ffffff"
+								}
+							]
 						}
 					},
 					{
@@ -53,6 +97,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							bgColor: "#791516",
 							mobileWidth: 600,
 							tabletWidth: 900
+						},
+						button: {
+							hAlign: "50%",
+							vAlign: "50%", 
+							buttons: [
+								{
+									visible: true,
+									text: "primary",
+									url: "#",
+									color: "#ffffff"
+								},
+								{
+									visible: true,
+									text: "secondary",
+									url: "#",
+									color: "#ffffff"
+								}
+							]
 						}
 					},
 					{
@@ -61,6 +123,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
+						},
+						button: {
+							hAlign: "50%",
+							vAlign: "50%", 
+							buttons: [
+								{
+									visible: true,
+									text: "primary",
+									url: "#",
+									color: "#ffffff"
+								},
+								{
+									visible: true,
+									text: "secondary",
+									url: "#",
+									color: "#ffffff"
+								}
+							]
 						}
 					},
 					{
@@ -69,6 +149,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
+						},
+						button: {
+							hAlign: "50%",
+							vAlign: "50%", 
+							buttons: [
+								{
+									visible: true,
+									text: "primary",
+									url: "#",
+									color: "#ffffff"
+								},
+								{
+									visible: true,
+									text: "secondary",
+									url: "#",
+									color: "#ffffff"
+								}
+							]
 						}
 					},
 					{
@@ -77,6 +175,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							bgColor: "#791516",
 							mobileWidth: 600,
 							tabletWidth: 900
+						},
+						button: {
+							hAlign: "50%",
+							vAlign: "50%", 
+							buttons: [
+								{
+									visible: true,
+									text: "primary",
+									url: "#",
+									color: "#ffffff"
+								},
+								{
+									visible: true,
+									text: "secondary",
+									url: "#",
+									color: "#ffffff"
+								}
+							]
 						}
 					},
 					{
@@ -85,6 +201,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
+						},
+						button: {
+							hAlign: "50%",
+							vAlign: "50%", 
+							buttons: [
+								{
+									visible: true,
+									text: "primary",
+									url: "#",
+									color: "#ffffff"
+								},
+								{
+									visible: true,
+									text: "secondary",
+									url: "#",
+									color: "#ffffff"
+								}
+							]
 						}
 					},
 					{
@@ -93,6 +227,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
+						},
+						button: {
+							hAlign: "50%",
+							vAlign: "50%", 
+							buttons: [
+								{
+									visible: true,
+									text: "primary",
+									url: "#",
+									color: "#ffffff"
+								},
+								{
+									visible: true,
+									text: "secondary",
+									url: "#",
+									color: "#ffffff"
+								}
+							]
 						}
 					},
 					{
@@ -101,6 +253,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
+						},
+						button: {
+							hAlign: "left",
+							vAlign: "middle", 
+							buttons: [
+								{
+									visible: true,
+									text: "primary",
+									url: "#",
+									color: "#ffffff"
+								},
+								{
+									visible: true,
+									text: "secondary",
+									url: "#",
+									color: "#ffffff"
+								}
+							]
 						}
 					},
 					{
@@ -109,6 +279,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
+						},
+						button: {
+							hAlign: "left",
+							vAlign: "middle", 
+							buttons: [
+								{
+									visible: true,
+									text: "primary",
+									url: "#",
+									color: "#ffffff"
+								},
+								{
+									visible: true,
+									text: "secondary",
+									url: "#",
+									color: "#ffffff"
+								}
+							]
 						}
 					},
 					{
@@ -117,6 +305,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
+						},
+						button: {
+							hAlign: "left",
+							vAlign: "middle", 
+							buttons: [
+								{
+									visible: true,
+									text: "primary",
+									url: "#",
+									color: "#ffffff"
+								},
+								{
+									visible: true,
+									text: "secondary",
+									url: "#",
+									color: "#ffffff"
+								}
+							]
 						}
 					},
 					{
@@ -125,6 +331,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
+						},
+						button: {
+							hAlign: "left",
+							vAlign: "middle", 
+							buttons: [
+								{
+									visible: true,
+									text: "primary",
+									url: "#",
+									color: "#ffffff"
+								},
+								{
+									visible: true,
+									text: "secondary",
+									url: "#",
+									color: "#ffffff"
+								}
+							]
 						}
 					},
 					{
@@ -133,6 +357,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
+						},
+						button: {
+							hAlign: "left",
+							vAlign: "middle", 
+							buttons: [
+								{
+									visible: true,
+									text: "primary",
+									url: "#",
+									color: "#ffffff"
+								},
+								{
+									visible: true,
+									text: "secondary",
+									url: "#",
+									color: "#ffffff"
+								}
+							]
 						}
 					},
 					{
@@ -141,6 +383,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
+						},
+						button: {
+							hAlign: "left",
+							vAlign: "middle", 
+							buttons: [
+								{
+									visible: true,
+									text: "primary",
+									url: "#",
+									color: "#ffffff"
+								},
+								{
+									visible: true,
+									text: "secondary",
+									url: "#",
+									color: "#ffffff"
+								}
+							]
 						}
 					},
 					{
@@ -149,6 +409,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
+						},
+						button: {
+							hAlign: "left",
+							vAlign: "middle", 
+							buttons: [
+								{
+									visible: true,
+									text: "primary",
+									url: "#",
+									color: "#ffffff"
+								},
+								{
+									visible: true,
+									text: "secondary",
+									url: "#",
+									color: "#ffffff"
+								}
+							]
 						}
 					},
 					{
@@ -157,6 +435,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
+						},
+						button: {
+							hAlign: "left",
+							vAlign: "middle", 
+							buttons: [
+								{
+									visible: true,
+									text: "primary",
+									url: "#",
+									color: "#ffffff"
+								},
+								{
+									visible: true,
+									text: "secondary",
+									url: "#",
+									color: "#ffffff"
+								}
+							]
 						}
 					},
 					{
@@ -165,6 +461,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
+						},
+						button: {
+							hAlign: "left",
+							vAlign: "middle", 
+							buttons: [
+								{
+									visible: true,
+									text: "primary",
+									url: "#",
+									color: "#ffffff"
+								},
+								{
+									visible: true,
+									text: "secondary",
+									url: "#",
+									color: "#ffffff"
+								}
+							]
 						}
 					},
 					{
@@ -173,6 +487,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
+						},
+						button: {
+							hAlign: "left",
+							vAlign: "middle", 
+							buttons: [
+								{
+									visible: true,
+									text: "primary",
+									url: "#",
+									color: "#ffffff"
+								},
+								{
+									visible: true,
+									text: "secondary",
+									url: "#",
+									color: "#ffffff"
+								}
+							]
 						}
 					},
 					{
@@ -181,6 +513,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
+						},
+						button: {
+							hAlign: "left",
+							vAlign: "middle", 
+							buttons: [
+								{
+									visible: true,
+									text: "primary",
+									url: "#",
+									color: "#ffffff"
+								},
+								{
+									visible: true,
+									text: "secondary",
+									url: "#",
+									color: "#ffffff"
+								}
+							]
 						}
 					},
 					{
@@ -189,6 +539,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
+						},
+						button: {
+							hAlign: "left",
+							vAlign: "middle", 
+							buttons: [
+								{
+									visible: true,
+									text: "primary",
+									url: "#",
+									color: "#ffffff"
+								},
+								{
+									visible: true,
+									text: "secondary",
+									url: "#",
+									color: "#ffffff"
+								}
+							]
 						}
 					},
 				]
