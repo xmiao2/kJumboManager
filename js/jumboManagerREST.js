@@ -23,18 +23,22 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 						button: {
 							hAlign: "75%",
 							vAlign: "70%", 
+							vGap: "1rem",
+							minWidth: "15%",
 							buttons: [
 								{
 									visible: true,
 									text: "primary",
 									url: "#",
-									color: "#ffffff"
+									color: "black",
+									bgColor: "rgba(0,0,0,0)"
 								},
 								{
 									visible: true,
 									text: "secondary",
 									url: "#",
-									color: "#ffffff"
+									color: "black",
+									bgColor: "rgba(0,0,0,0)"
 								}
 							]
 						}
@@ -47,20 +51,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							tabletWidth: 900
 						},
 						button: {
-							hAlign: "50%",
-							vAlign: "50%", 
+							hAlign: "75%",
+							vAlign: "70%", 
+							vGap: "1rem",
+							minWidth: "15%",
 							buttons: [
 								{
 									visible: true,
 									text: "primary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								},
 								{
 									visible: false,
 									text: "secondary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								}
 							]
 						}
@@ -73,20 +81,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							tabletWidth: 700
 						},
 						button: {
-							hAlign: "50%",
-							vAlign: "50%", 
+							hAlign: "75%",
+							vAlign: "70%", 
+							vGap: "1rem",
+							minWidth: "15%",
 							buttons: [
 								{
 									visible: true,
 									text: "primary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								},
 								{
 									visible: true,
 									text: "secondary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								}
 							]
 						}
@@ -99,20 +111,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							tabletWidth: 900
 						},
 						button: {
-							hAlign: "50%",
-							vAlign: "50%", 
+							hAlign: "75%",
+							vAlign: "70%", 
+							vGap: "1rem",
+							minWidth: "15%",
 							buttons: [
 								{
 									visible: true,
 									text: "primary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								},
 								{
 									visible: true,
 									text: "secondary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								}
 							]
 						}
@@ -125,20 +141,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							tabletWidth: 900
 						},
 						button: {
-							hAlign: "50%",
-							vAlign: "50%", 
+							hAlign: "75%",
+							vAlign: "70%", 
+							vGap: "1rem",
+							minWidth: "15%",
 							buttons: [
 								{
 									visible: true,
 									text: "primary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								},
 								{
 									visible: true,
 									text: "secondary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								}
 							]
 						}
@@ -151,20 +171,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							tabletWidth: 900
 						},
 						button: {
-							hAlign: "50%",
-							vAlign: "50%", 
+							hAlign: "75%",
+							vAlign: "70%", 
+							vGap: "1rem",
+							minWidth: "15%",
 							buttons: [
 								{
 									visible: true,
 									text: "primary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								},
 								{
 									visible: true,
 									text: "secondary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								}
 							]
 						}
@@ -177,20 +201,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							tabletWidth: 900
 						},
 						button: {
-							hAlign: "50%",
-							vAlign: "50%", 
+							hAlign: "75%",
+							vAlign: "70%", 
+							vGap: "1rem",
+							minWidth: "15%",
 							buttons: [
 								{
 									visible: true,
 									text: "primary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								},
 								{
 									visible: true,
 									text: "secondary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								}
 							]
 						}
@@ -203,20 +231,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							tabletWidth: 900
 						},
 						button: {
-							hAlign: "50%",
-							vAlign: "50%", 
+							hAlign: "75%",
+							vAlign: "70%", 
+							vGap: "1rem",
+							minWidth: "15%",
 							buttons: [
 								{
 									visible: true,
 									text: "primary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								},
 								{
 									visible: true,
 									text: "secondary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								}
 							]
 						}
@@ -229,20 +261,24 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							tabletWidth: 900
 						},
 						button: {
-							hAlign: "50%",
-							vAlign: "50%", 
+							hAlign: "75%",
+							vAlign: "70%", 
+							vGap: "1rem",
+							minWidth: "15%",
 							buttons: [
 								{
 									visible: true,
 									text: "primary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								},
 								{
 									visible: true,
 									text: "secondary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								}
 							]
 						}
@@ -262,13 +298,15 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 									visible: true,
 									text: "primary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								},
 								{
 									visible: true,
 									text: "secondary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								}
 							]
 						}
@@ -288,13 +326,15 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 									visible: true,
 									text: "primary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								},
 								{
 									visible: true,
 									text: "secondary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								}
 							]
 						}
@@ -314,13 +354,15 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 									visible: true,
 									text: "primary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								},
 								{
 									visible: true,
 									text: "secondary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								}
 							]
 						}
@@ -340,13 +382,15 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 									visible: true,
 									text: "primary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								},
 								{
 									visible: true,
 									text: "secondary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								}
 							]
 						}
@@ -366,13 +410,15 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 									visible: true,
 									text: "primary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								},
 								{
 									visible: true,
 									text: "secondary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								}
 							]
 						}
@@ -392,13 +438,15 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 									visible: true,
 									text: "primary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								},
 								{
 									visible: true,
 									text: "secondary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								}
 							]
 						}
@@ -418,13 +466,15 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 									visible: true,
 									text: "primary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								},
 								{
 									visible: true,
 									text: "secondary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								}
 							]
 						}
@@ -444,13 +494,15 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 									visible: true,
 									text: "primary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								},
 								{
 									visible: true,
 									text: "secondary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								}
 							]
 						}
@@ -470,13 +522,15 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 									visible: true,
 									text: "primary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								},
 								{
 									visible: true,
 									text: "secondary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								}
 							]
 						}
@@ -496,13 +550,15 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 									visible: true,
 									text: "primary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								},
 								{
 									visible: true,
 									text: "secondary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								}
 							]
 						}
@@ -522,13 +578,15 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 									visible: true,
 									text: "primary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								},
 								{
 									visible: true,
 									text: "secondary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								}
 							]
 						}
@@ -548,13 +606,15 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 									visible: true,
 									text: "primary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								},
 								{
 									visible: true,
 									text: "secondary",
 									url: "#",
-									color: "#ffffff"
+									color: "#ffffff",
+									bgColor: "rgba(0,0,0,0)"
 								}
 							]
 						}

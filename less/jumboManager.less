@@ -73,6 +73,19 @@
 	bottom: 0;
 }
 
+#jumbomanager-overlay {
+	.overlay-button {
+		display: block;
+		border: 1px solid @black;
+		min-width: 100%;
+		background-color: white;
+	}
+
+	.overlay-button-primary {
+
+	}
+}
+
 #jumbomanager-preview {
 	text-align: center;
 	width: 100%;
@@ -137,6 +150,20 @@
 	.component {
 		display: inline-block;
 		padding: 0 2rem;
+	}
+}
+
+#jumbomanager-button-d-minwidth,
+#jumbomanager-button-d-valign,
+#jumbomanager-button-d-halign {
+	.ui-slider-pip {
+		display: none;
+	}
+	.ui-slider-pip:nth-child(20n+2) {
+		display: block;
+	}
+	.ui-slider-pip-first {
+		display: block;
 	}
 }
 

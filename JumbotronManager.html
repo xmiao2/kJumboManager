@@ -107,14 +107,39 @@
 					<div class="control-group">
 						<h4>Current Slide - Button</h4>
 						<div class="form-group">
-							<h5>Content</h5>
+							<label for="jumbomanager-button-content">Content</label>
 							<select id="jumbomanager-button-content" data-width="100%">
 								<option value="none">None</option>
 								<option value="primary">Primary</option>
 								<option value="all">Primary + Secondary</option>
 							</select>
 						</div>
-						<div class="form-group">
+						<div class="form-group display-for-primary">
+							<div class="slider-container">
+								<label for="jumbomanager-button-d-halign">Desktop Horizontal Alignment</label>
+								<div id="jumbomanager-button-d-halign"></div>
+							</div>
+						</div>
+						<div class="form-group display-for-primary">
+							<div class="slider-container">
+								<label for="jumbomanager-button-d-valign">Desktop Vertical Alignment</label>
+								<div id="jumbomanager-button-d-valign"></div>
+							</div>
+						</div>
+						<div class="form-group display-for-all">
+							<div class="slider-container">
+								<label for="jumbomanager-button-d-vgap">Desktop Vertical Gap</label>
+								<div id="jumbomanager-button-d-vgap"></div>
+							</div>
+						</div>
+						<div class="form-group display-for-all">
+							<div class="slider-container">
+								<label for="jumbomanager-button-d-width">Desktop Width</label>
+								<div id="jumbomanager-button-d-minWidth"></div>
+							</div>
+						</div>
+
+						<!-- <div class="form-group">
 							<h5>Horizontal Alignment <span class="tooltip-container" title="Only used for desktop. Buttons will be automatically centered for tablet and mobile"></span></h5>
 							<select id="jumbomanager-button-horizontal-align" data-width="100%">
 								<option value="left">Left</option>
@@ -129,35 +154,43 @@
 								<option value="middle">Middle</option>
 								<option value="bottom">Bottom</option>
 							</select>
-						</div>
-						<div class="form-group">
+						</div> -->
+						<div class="form-group display-for-primary">
 							<h5>Primary Button</h5>
 							<div class="form-group sub-form-group">
 								<label for="jumbomanager-button-primary-text">Text</label>
-								<input label="jumbomanager-button-primary-text" type="text" class="form-control" placeholder="TODO"/>
+								<input id="jumbomanager-button-primary-text" type="text" class="form-control" placeholder="TODO"/>
 							</div>
 							<div class="form-group sub-form-group">
 								<label for="jumbomanager-button-primary-url">Url</label>
-								<input label="jumbomanager-button-primary-url" type="text" class="form-control" placeholder="TODO"/>
+								<input id="jumbomanager-button-primary-url" type="text" class="form-control" placeholder="TODO"/>
 							</div>
 							<div class="form-group sub-form-group">
-								<label for="jumbomanager-button-primary-color">Color</label>
-								<input label="jumbomanager-button-primary-color" type="text" class="form-control" placeholder="TODO"/>
+								<label for="jumbomanager-button-primary-color">Color&nbsp;</label>
+								<input id="jumbomanager-button-primary-color" type="text" class="form-control" placeholder="TODO"/>
+							</div>
+							<div class="form-group sub-form-group">
+								<label for="jumbomanager-button-primary-color">Background Color&nbsp;</label>
+								<input id="jumbomanager-button-primary-bgcolor" type="text" class="form-control" placeholder="TODO"/>
 							</div>
 						</div>
-						<div class="form-group">
+						<div class="form-group display-for-all">
 							<h5>Secondary Button</h5>
 							<div class="form-group sub-form-group">
 								<label for="jumbomanager-button-secondary-text">Text</label>
-								<input label="jumbomanager-button-secondary-text" type="text" class="form-control" placeholder="TODO"/>
+								<input id="jumbomanager-button-secondary-text" type="text" class="form-control" placeholder="TODO"/>
 							</div>
 							<div class="form-group sub-form-group">
 								<label for="jumbomanager-button-secondary-url">Url</label>
-								<input label="jumbomanager-button-secondary-url" type="text" class="form-control" placeholder="TODO"/>
+								<input id="jumbomanager-button-secondary-url" type="text" class="form-control" placeholder="TODO"/>
 							</div>
 							<div class="form-group sub-form-group">
-								<label for="jumbomanager-button-secondary-color">Color</label>
-								<input label="jumbomanager-button-secondary-color" type="text" class="form-control" placeholder="TODO"/>
+								<label for="jumbomanager-button-secondary-color">Color&nbsp;</label>
+								<input id="jumbomanager-button-secondary-color" type="text" class="form-control" placeholder="TODO"/>
+							</div>
+							<div class="form-group sub-form-group">
+								<label for="jumbomanager-button-secondary-color">Background Color&nbsp;</label>
+								<input id="jumbomanager-button-secondary-bgcolor" type="text" class="form-control" placeholder="TODO"/>
 							</div>
 						</div>
 					</div>

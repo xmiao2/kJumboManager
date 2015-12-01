@@ -19,6 +19,8 @@ window.jumboManager = (function($){
 	TABLET_RANGE_BACKGROUND = "tablet-range-background",
 	MOBILE_RANGE_BACKGROUND = "mobile-range-background",
 	DESKTOP_RANGE_BACKGROUND = "desktop-range-background",
+	OVERLAY_BUTTON = "overlay-button",
+	OVERLAY_BUTTON_PRIMARY = "overlay-button-primary",
 
 	// Instance variables
 	settings = {},
@@ -53,8 +55,19 @@ window.jumboManager = (function($){
 
 		buttonsId: "jumbomanager-buttons",
 		buttonContentId: "jumbomanager-button-content",
-		buttonHAlignId: "jumbomanager-button-horizontal-align",
-		buttonVAlignId: "jumbomanager-button-vertical-align",
+		buttonDHAlignId: "jumbomanager-button-d-halign",
+		buttonDVAlignId: "jumbomanager-button-d-valign",
+		buttonDVGapId: "jumbomanager-button-d-vgap",
+		buttonDMinWidthId: "jumbomanager-button-d-minWidth",
+
+		buttonPrimaryTextId: "jumbomanager-button-primary-text",
+		buttonPrimaryUrlId: "jumbomanager-button-primary-url",
+		buttonPrimaryColorId: "jumbomanager-button-primary-color",
+		buttonPrimaryBgColorId: "jumbomanager-button-primary-bgcolor",
+		buttonSecondaryTextId: "jumbomanager-button-secondary-text",
+		buttonSecondaryUrlId: "jumbomanager-button-secondary-url",
+		buttonSecondaryColorId: "jumbomanager-button-secondary-color",
+		buttonSecondaryBgColorId: "jumbomanager-button-secondary-bgcolor",
 
 		labelsId: "jumbomanager-labels",
 
@@ -224,6 +237,8 @@ window.jumboManager = (function($){
 				hAlign = jumboJson.button.hAlign,
 				vAlign = jumboJson.button.vAlign,
 				buttons = jumboJson.button.buttons,
+				vGap = jumboJson.button.vGap,
+				minWidth = jumboJson.button.minWidth,
 
 				_focusPreviewImage = function() {
 					$("."+CURRENT_JUMBO).removeClass(CURRENT_JUMBO);
@@ -253,22 +268,40 @@ window.jumboManager = (function($){
 
 				_renderButtons = function() {
 
-					_ui.$buttons.empty();
+					_ui.$buttons
+						.empty()
+						.css({
+							display: "inline-block",
+							position: "absolute",
+							left: hAlign,
+							top: vAlign,
+							transform: "translate(-" + hAlign + ", -" + vAlign + ")",
+							minWidth: minWidth
+						});
 
 					$.each(buttons, function(idx, button){
 						if(button.visible){
 							_ui.$buttons
-								.css({
-									display: "inline-block",
-									position: "absolute",
-									left: hAlign,
-									top: vAlign,
-									transform: "translate(-" + hAlign + ", -" + vAlign + ")"
-								})
-								.append($("<div class='btn btn-primary btn-block'></div>")
+								.append($("<div></div>")
+									.addClass(OVERLAY_BUTTON)
 									.html(button.text)
+									.css({
+										"background-color": button.bgColor,
+										"border-color": button.color,
+										"color": button.color,
+										"margin-top": vGap
+									})
 								)
 							;
+
+							if(idx === 0) {
+								_ui.$buttons.find("."+OVERLAY_BUTTON)
+									.addClass(OVERLAY_BUTTON_PRIMARY)
+									.css({
+										"margin-top": 0
+									})
+								;
+							}
 						}
 					});
 				},
@@ -280,7 +313,103 @@ window.jumboManager = (function($){
 					});
 				},
 
+				_renderButtonControls = function() {
+					// Populate Button Content
+					$(".display-for-primary, .display-for-all").hide();
+					if(buttons[PRIMARY_BUTTON_INDEX].visible && buttons[SECONDARY_BUTTON_INDEX].visible) {
+						_ui.$buttonContent.selectpicker("val", "all");
+						$(".display-for-primary, .display-for-all").show();
+					} else if(buttons[PRIMARY_BUTTON_INDEX].visible) {
+						_ui.$buttonContent.selectpicker("val", "primary");
+						$(".display-for-primary").show();
+					} else {
+						_ui.$buttonContent.selectpicker("val", "none");
+					}
+
+					// Populate desktop horizontal alignment
+					_ui.$buttonDHAlign.slider({
+						value: parseInt(hAlign)
+					});
+
+					// Populate desktop vertical alignment
+					_ui.$buttonDVAlign.slider({
+						value: parseInt(vAlign)
+					});
+
+					// Populate desktop vertical gap
+					_ui.$buttonDVGap.slider({
+						value: parseInt(vGap)
+					});
+
+					// Populate desktop width
+					_ui.$buttonDMinWidth.slider({
+						value: parseInt(minWidth)
+					});
+
+					_ui.$buttonPrimaryText.val(buttons[PRIMARY_BUTTON_INDEX].text);
+					_ui.$buttonSecondaryText.val(buttons[SECONDARY_BUTTON_INDEX].text);
+					_ui.$buttonPrimaryUrl.val(buttons[PRIMARY_BUTTON_INDEX].url);
+					_ui.$buttonSecondaryUrl.val(buttons[SECONDARY_BUTTON_INDEX].url);
+
+					// Populate color and background color
+					var
+					buttonSpectrumDefaults = {
+						showAlpha: true,
+						showInput: true,
+						allowEmpty: true,
+						showPalette: true,
+						preferredFormat: "hex"
+					},
+
+					updateButtonBgColor = function(idx, color) {
+						buttons[idx].bgColor = color.toRgbString();
+					},
+
+					updateButtonColor = function(idx, color) {
+						buttons[idx].color = color.toRgbString();
+					};
+
+					_ui.$buttonPrimaryColor
+						.spectrum($.extend({}, buttonSpectrumDefaults, {
+							color: buttons[PRIMARY_BUTTON_INDEX].color,
+							move: function(color) {
+								updateButtonColor(PRIMARY_BUTTON_INDEX, color);
+								_renderButtons();
+							}
+						}))
+					;
+					_ui.$buttonSecondaryColor
+						.spectrum($.extend({}, buttonSpectrumDefaults, {
+							color: buttons[SECONDARY_BUTTON_INDEX].color,
+							move: function(color) {
+								updateButtonColor(SECONDARY_BUTTON_INDEX, color);
+								_renderButtons();
+							}
+						}))
+					;
+					_ui.$buttonPrimaryBgColor
+						.spectrum($.extend({}, buttonSpectrumDefaults, {
+							color: buttons[PRIMARY_BUTTON_INDEX].bgColor,
+							move: function(color) {
+								updateButtonBgColor(PRIMARY_BUTTON_INDEX, color);
+								_renderButtons();
+							}
+						}))
+					;
+					_ui.$buttonSecondaryBgColor
+						.spectrum($.extend({}, buttonSpectrumDefaults, {
+							color: buttons[SECONDARY_BUTTON_INDEX].bgColor,
+							move: function(color) {
+								updateButtonBgColor(SECONDARY_BUTTON_INDEX, color);
+								_renderButtons();
+							}
+						}))
+					;
+				},
+
 				_renderControls = function() {
+
+					// Populate background color picker value
 					_ui.$slideBgColor
 						.spectrum({
 							color: bgColor,
@@ -298,23 +427,19 @@ window.jumboManager = (function($){
 						})
 					;
 
+					// Populate Responsive Widths slider values
 					_ui.$responsiveWidths
 						.slider({
 							values: [mobileWidth, tabletWidth]
 						})
 					;
 
+					// Populate Desktop Image Location
 					_ui.$desktopImageSrc
 						.val(imageUrl)
 					;
 
-					if(buttons[PRIMARY_BUTTON_INDEX].visible && buttons[SECONDARY_BUTTON_INDEX].visible) {
-						_ui.$buttonContent.selectpicker("val", "all");
-					} else if(buttons[PRIMARY_BUTTON_INDEX].visible) {
-						_ui.$buttonContent.selectpicker("val", "primary");
-					} else {
-						_ui.$buttonContent.selectpicker("val", "none");
-					}
+					_renderButtonControls();
 				},
 
 				_renderPreviewImage = function() {
@@ -365,6 +490,34 @@ window.jumboManager = (function($){
 						buttons[idx].visible = visible;
 					},
 
+					setButtonText: function(idx, text) {
+						buttons[idx].text = text;
+					},
+
+					setButtonUrl: function(idx, url) {
+						buttons[idx].url = url;
+					},
+
+					setButtonDHAlign: function(_DHAlign, unit) {
+						unit = typeof unit !== 'undefined' ? unit : '%';
+						hAlign = _DHAlign + unit;
+					},
+
+					setButtonDVAlign: function(_DVAlign, unit) {
+						unit = typeof unit !== 'undefined' ? unit : '%';
+						vAlign = _DVAlign + unit;
+					},
+
+					setButtonDVGap: function(_DVGap, unit) {
+						unit = typeof unit !== 'undefined' ? unit : 'rem';
+						vGap = _DVGap + unit;
+					},
+
+					setButtonDMinWidth: function(_DMinWidth, unit) {
+						unit = typeof unit !== 'undefined' ? unit : '%';
+						minWidth = _DMinWidth + unit;
+					},
+
 					renderFocusImage: function() {
 						return _renderFocusImage.apply(this, arguments);
 					},
@@ -375,6 +528,10 @@ window.jumboManager = (function($){
 
 					renderOverlay: function() {
 						return _renderOverlay.apply(this, arguments);
+					},
+
+					renderButtonControls: function() {
+						return _renderButtonControls.apply(this, arguments);
 					},
 					
 					renderBackgroundImage: function() {
@@ -628,22 +785,95 @@ window.jumboManager = (function($){
 						Jumbos.getCurrentJumbo().setButtonVisibility(SECONDARY_BUTTON_INDEX, true);
 						break;
 				}
+				Jumbos.getCurrentJumbo().renderButtonControls();
 				Jumbos.getCurrentJumbo().renderButtons();
 			});
 
-			ui.$buttonHAlign.selectpicker({
-				style: "btn-default"
-			}).on("change", function(event){
+			var updateDHAlign = function(event, _ui) {
+				Jumbos.getCurrentJumbo().setButtonDHAlign(_ui.value);
+				Jumbos.getCurrentJumbo().renderButtons();
+			};
+
+			ui.$buttonDHAlign.slider({
+				min: 0,
+				max: 100,
+				step: 1,
+				value: options.initDHAlign,
+				slide: updateDHAlign,
+				change: updateDHAlign
+			}).slider('pips', {rest: 'label', suffix: '%'}).slider('float', {suffix: '%'});
+
+
+			var updateDVAlign = function(event, _ui) {
+				Jumbos.getCurrentJumbo().setButtonDVAlign(_ui.value);
+				Jumbos.getCurrentJumbo().renderButtons();
+			};
+
+			ui.$buttonDVAlign.slider({
+				min: 0,
+				max: 100,
+				step: 1,
+				value: options.initDVAlign,
+				slide: updateDVAlign,
+				change: updateDVAlign
+			}).slider('pips', {rest: 'label', suffix: '%'}).slider('float', {suffix: '%'});
+
+			var updateDVGap = function(event, _ui) {
+				Jumbos.getCurrentJumbo().setButtonDVGap(_ui.value);
+				Jumbos.getCurrentJumbo().renderButtons();
+			};
+
+			ui.$buttonDVGap.slider({
+				min: 0,
+				max: 20,
+				step: 1,
+				value: options.initDVGap,
+				slide: updateDVGap,
+				change: updateDVGap
+			}).slider('pips', {suffix: 'rem'}).slider('float', {suffix: 'rem'});
+
+			var updateDMinWidth = function(event, _ui) {
+				Jumbos.getCurrentJumbo().setButtonDMinWidth(_ui.value);
+				Jumbos.getCurrentJumbo().renderButtons();
+			};
+
+			ui.$buttonDMinWidth.slider({
+				min: 0,
+				max: 100,
+				step: 1,
+				value: options.initDMinWidth,
+				slide: updateDMinWidth,
+				change: updateDMinWidth
+			}).slider('pips', {rest: 'label', suffix: '%'}).slider('float', {suffix: '%'});
+
+			ui.$buttonPrimaryText.on("keyup change", function(event) {
+				Jumbos.getCurrentJumbo().setButtonText(PRIMARY_BUTTON_INDEX, $(this).val());
 				Jumbos.getCurrentJumbo().renderButtons();
 			});
 
-			ui.$buttonVAlign.selectpicker({
-				style: "btn-default"
-			}).on("change", function(event){
+			ui.$buttonSecondaryText.on("keyup change", function(event) {
+				Jumbos.getCurrentJumbo().setButtonText(SECONDARY_BUTTON_INDEX, $(this).val());
 				Jumbos.getCurrentJumbo().renderButtons();
 			});
+
+			ui.$buttonPrimaryUrl.on("change", function(event) {
+				Jumbos.getCurrentJumbo().setButtonUrl(PRIMARY_BUTTON_INDEX, $(this).val());
+			});
+
+			ui.$buttonSecondaryUrl.on("change", function(event) {
+				Jumbos.getCurrentJumbo().setButtonUrl(SECONDARY_BUTTON_INDEX, $(this).val());
+			});
+
+			ui.$buttonPrimaryColor.spectrum();
+			ui.$buttonSecondaryColor.spectrum();
+			ui.$buttonPrimaryBgColor.spectrum();
+			ui.$buttonSecondaryBgColor.spectrum();
+
 		})({
-
+			initDHAlign: options.initDHAlign || 50,		//%
+			initDVAlign: options.initDVAlign || 50,		//%
+			initDVGap: options.initDVGap || 1,			//rem
+			initDMinWidth: options.initDMinWidth || 10 	//%
 		});
 
 		(function initGridControls(options) {
@@ -661,26 +891,32 @@ window.jumboManager = (function($){
 				.prop("checked", options.initShowGrid)
 			;
 
+			var updateGridHGap = function(event, _ui) {
+				var gridHGap = _ui.value;
+				ui.$mainCanvas.responsiveCanvas({gridHGap: gridHGap, redrawGrid: true});
+			};
+
 			ui.$gridHGap.slider({
 				min: 10,
 				max: 80,
 				step: 10,
 				value: options.initGridHGap,
-				slide: function(event, _ui) {
-					var gridHGap = _ui.value;
-					ui.$mainCanvas.responsiveCanvas({gridHGap: gridHGap, redrawGrid: true});
-				}
+				slide: updateGridHGap,
+				change: updateGridHGap
 			}).slider("pips", {suffix: "px"}).slider("float", {suffix: "px"});
 			
+			var updateGridVGap = function(event, _ui) {
+				var gridVGap = _ui.value;
+				ui.$mainCanvas.responsiveCanvas({gridVGap: gridVGap, redrawGrid: true});
+			};
+
 			ui.$gridVGap.slider({
 				min: 10,
 				max: 80,
 				step: 10,
 				value: options.initGridVGap,
-				slide: function(event, _ui) {
-					var gridVGap = _ui.value;
-					ui.$mainCanvas.responsiveCanvas({gridVGap: gridVGap, redrawGrid: true});
-				}
+				slide: updateGridVGap,
+				change: updateGridVGap
 			}).slider("pips", {suffix: "px"}).slider("float", {suffix: "px"});
 		
 		})({
