@@ -35,6 +35,7 @@
 					<div id="jumbomanager-canvas">
 						<canvas id="jumbomanager-main-canvas"></canvas>
 						<span class="slideButton" id="jumbomanager-prevSlide"><i class="fa fa-5x fa-angle-left"></i></span>
+						<div class="letterbox letterbox-left"></div>
 						<div id="jumbomanager-preview">
 							<div id="jumbomanager-background">
 								<!-- Canvas image container populated by JS -->
@@ -44,8 +45,10 @@
 								<div id="jumbomanager-buttons"></div>
 							</div>
 						</div>
+						<div class="letterbox letterbox-right"></div>
 						<span class="slideButton" id="jumbomanager-nextSlide"><i class="fa fa-5x fa-angle-right"></i></span>
 					</div>
+					<div id="jumbomanager-responsive-slider" hidden></div>
 				</div>
 				<div class="previews-container">
 					<div id="jumbomanager-previews">
@@ -54,186 +57,184 @@
 				</div>
 			</div>
 			<div class="controls-container">
-				<div id="jumbomanager-controls">
-					<div class="control-group">
-						<h4>General</h4>
-						<div class="form-group">
-							<div class="slider-container">
-								<label for="jumbomanager-bg-max-height">Jumbotron Max Height</label>
-								<div id="jumbomanager-bg-max-height"></div>
+				<div id="jumbomanager-controls" class="panel-group" role="tablist" aria-multiselectable="true">
+					<div class="panel panel-primary">
+						<div class="panel-heading" role="tab">
+							<h4 class="panel-title">
+								<a role="button" aria-expanded="true" aria-controls="jumbomanager-controls-general" data-toggle="collapse" data-parent="#jumbomanager-controls" href="#jumbomanager-controls-general">
+									General
+								</a>
+							</h4>
+						</div>
+						<div id="jumbomanager-controls-general" class="panel-collapse collapse in" role="tabpanel">
+							<div class="panel-body control-group">
+								<div class="form-group">
+									<div class="slider-container">
+										<label for="jumbomanager-bg-max-height">Jumbotron Max Height</label>
+										<div id="jumbomanager-bg-max-height"></div>
+									</div>
+								</div>
+
+								<div class="checkbox">
+									<label>
+										<input id="jumbomanager-grid-toggle" type="checkbox"/>Show Grid
+									</label>
+								</div>
+
+								<div class="form-group">
+									<div class="slider-container">
+										<label for="jumbomanager-grid-hgap">Horizontal Grid Gap</label>
+										<div id="jumbomanager-grid-hgap"></div>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<div class="slider-container">
+										<label for="jumbomanager-grid-vgap">Vertical Grid Gap</label>
+										<div id="jumbomanager-grid-vgap"></div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
-					<div class="control-group">
-						<h4>Current Slide - General</h4>
-						<div class="form-group">
-							<label>Background Color&nbsp;</label>
-							<input id="jumbomanager-slide-bg-color" type="text"/>
+
+					<div class="panel panel-primary">
+						<div class="panel-heading" role="tab">
+							<h4 class="panel-title">
+								<a role="button" aria-expanded="false" aria-controls="jumbomanager-controls-slide-general" data-toggle="collapse" data-parent="#jumbomanager-controls" href="#jumbomanager-controls-slide-general">
+									Current Slide - General
+								</a>
+							</h4>
 						</div>
-						<div class="form-group">
-							<label>Theme Color&nbsp;</label>
-							<!-- <input id="jumbomanager-slide-bg-color" type="text"/> -->TODO
-						</div>
-						<div class="form-group">
-							<label>URL&nbsp;</label>
-							<!-- <input id="jumbomanager-slide-bg-color" type="text"/> -->TODO
-						</div>
-						<div class="form-group">
-							<label for="jumbomanager-desktop-image-upload">Desktop Image Location</label>
-							<input type="file" id="jumbomanager-desktop-image-upload" value="upload" class="hidden"/>
-							<small>[<a onclick="getElementById('jumbomanager-desktop-image-upload').click();" href="javascript:void(0);">Upload</a>]</small>
-							<input id="jumbomanager-desktop-image-src" type="text" class="form-control" placeholder="Not available" disabled/>
-						</div>
-						<div class="form-group">
-							<label for="jumbomanager-tablet-image-upload">Tablet Image Location</label>
-							<input type="file" id="jumbomanager-tablet-image-upload" value="upload" class="hidden"/>
-							<small>[<a onclick="getElementById('jumbomanager-tablet-image-upload').click();" href="javascript:void(0);">Upload</a>]</small>
-							<input id="jumbomanager-tablet-image-src" type="text" class="form-control" placeholder="Not available" disabled/>
-						</div>
-						<div class="form-group">
-							<label for="jumbomanager-mobile-image-upload">Mobile Image Location</label>
-							<input type="file" id="jumbomanager-mobile-image-upload" value="upload" class="hidden"/>
-							<small>[<a onclick="getElementById('jumbomanager-mobile-image-upload').click();" href="javascript:void(0);">Upload</a>]</small>
-							<input id="jumbomanager-mobile-image-src" type="text" class="form-control" placeholder="Not available" disabled/>
-						</div>
-						<div class="form-group">
-							<div class="slider-container">
-								<label for="jumbomanager-bg-max-height">Responsive Widths (px)</label>
-								<small>[<a class="" id="jumbomanager-apply-all-responsive-widths" href="javascript:void(0);">Apply settings to all slides</a>]</small>
-								<div id="jumbomanager-responsive-widths"></div>
+						<div id="jumbomanager-controls-slide-general" class="panel-collapse collapse" role="tabpanel">
+							<div class="panel-body control-group">
+								<div class="form-group">
+									<label>Background Color&nbsp;</label>
+									<input id="jumbomanager-slide-bg-color" type="text"/>
+								</div>
+								<div class="form-group">
+									<label>Theme Color&nbsp;</label>
+									<!-- <input id="jumbomanager-slide-bg-color" type="text"/> -->TODO
+								</div>
+								<div class="form-group">
+									<label>URL&nbsp;</label>
+									<!-- <input id="jumbomanager-slide-bg-color" type="text"/> -->TODO
+								</div>
+								<div class="form-group">
+									<label for="jumbomanager-desktop-image-upload">Desktop Image Location</label>
+									<input type="file" id="jumbomanager-desktop-image-upload" value="upload" class="hidden"/>
+									<small>[<a onclick="getElementById('jumbomanager-desktop-image-upload').click();" href="javascript:void(0);">Upload</a>]</small>
+									<input id="jumbomanager-desktop-image-src" type="text" class="form-control" placeholder="Not available" disabled/>
+								</div>
+								<div class="form-group">
+									<label for="jumbomanager-tablet-image-upload">Tablet Image Location</label>
+									<input type="file" id="jumbomanager-tablet-image-upload" value="upload" class="hidden"/>
+									<small>[<a onclick="getElementById('jumbomanager-tablet-image-upload').click();" href="javascript:void(0);">Upload</a>]</small>
+									<input id="jumbomanager-tablet-image-src" type="text" class="form-control" placeholder="Not available" disabled/>
+								</div>
+								<div class="form-group">
+									<label for="jumbomanager-mobile-image-upload">Mobile Image Location</label>
+									<input type="file" id="jumbomanager-mobile-image-upload" value="upload" class="hidden"/>
+									<small>[<a onclick="getElementById('jumbomanager-mobile-image-upload').click();" href="javascript:void(0);">Upload</a>]</small>
+									<input id="jumbomanager-mobile-image-src" type="text" class="form-control" placeholder="Not available" disabled/>
+								</div>
+								<div class="form-group">
+									<div class="slider-container">
+										<label for="jumbomanager-bg-max-height">Responsive Widths (px)</label>
+										<small>[<a class="" id="jumbomanager-apply-all-responsive-widths" href="javascript:void(0);">Apply settings to all slides</a>]</small>
+										<div id="jumbomanager-responsive-widths"></div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
-					<div class="control-group">
-						<h4>Current Slide - Button</h4>
-						<div class="form-group">
-							<label for="jumbomanager-button-content">Content</label>
-							<select id="jumbomanager-button-content" data-width="100%">
-								<option value="none">None</option>
-								<option value="primary">Primary</option>
-								<option value="all">Primary + Secondary</option>
-							</select>
-						</div>
-						<div class="form-group display-for-primary">
-							<div class="slider-container">
-								<label for="jumbomanager-button-d-halign">Desktop Horizontal Alignment</label>
-								<div id="jumbomanager-button-d-halign"></div>
-							</div>
-						</div>
-						<div class="form-group display-for-primary">
-							<div class="slider-container">
-								<label for="jumbomanager-button-d-valign">Desktop Vertical Alignment</label>
-								<div id="jumbomanager-button-d-valign"></div>
-							</div>
-						</div>
-						<div class="form-group display-for-all">
-							<div class="slider-container">
-								<label for="jumbomanager-button-d-vgap">Desktop Vertical Gap</label>
-								<div id="jumbomanager-button-d-vgap"></div>
-							</div>
-						</div>
-						<div class="form-group display-for-all">
-							<div class="slider-container">
-								<label for="jumbomanager-button-d-width">Desktop Width</label>
-								<div id="jumbomanager-button-d-minWidth"></div>
-							</div>
-						</div>
 
-						<!-- <div class="form-group">
-							<h5>Horizontal Alignment <span class="tooltip-container" title="Only used for desktop. Buttons will be automatically centered for tablet and mobile"></span></h5>
-							<select id="jumbomanager-button-horizontal-align" data-width="100%">
-								<option value="left">Left</option>
-								<option value="center">Center</option>
-								<option value="right">Right</option>
-							</select>
+					<div class="panel panel-primary">
+						<div class="panel-heading" role="tab">
+							<h4 class="panel-title">
+								<a role="button" aria-expanded="false" aria-controls="jumbomanager-controls-slide-buttons" data-toggle="collapse" data-parent="#jumbomanager-controls" href="#jumbomanager-controls-slide-buttons">
+									Current Slide - Buttons
+								</a>
+							</h4>
 						</div>
-						<div class="form-group">
-							<h5>Vertical Alignment <span class="tooltip-container" title="Only used for desktop. Buttons will be automatically placed in bottom for tablet and mobile"></span></h5>
-							<select id="jumbomanager-button-vertical-align" data-width="100%">
-								<option value="top">Top</option>
-								<option value="middle">Middle</option>
-								<option value="bottom">Bottom</option>
-							</select>
-						</div> -->
-						<div class="form-group display-for-primary">
-							<h5>Primary Button</h5>
-							<div class="form-group sub-form-group">
-								<label for="jumbomanager-button-primary-text">Text</label>
-								<input id="jumbomanager-button-primary-text" type="text" class="form-control" placeholder="TODO"/>
-							</div>
-							<div class="form-group sub-form-group">
-								<label for="jumbomanager-button-primary-url">Url</label>
-								<input id="jumbomanager-button-primary-url" type="text" class="form-control" placeholder="TODO"/>
-							</div>
-							<div class="form-group sub-form-group">
-								<label for="jumbomanager-button-primary-color">Color&nbsp;</label>
-								<input id="jumbomanager-button-primary-color" type="text" class="form-control" placeholder="TODO"/>
-							</div>
-							<div class="form-group sub-form-group">
-								<label for="jumbomanager-button-primary-color">Background Color&nbsp;</label>
-								<input id="jumbomanager-button-primary-bgcolor" type="text" class="form-control" placeholder="TODO"/>
-							</div>
-						</div>
-						<div class="form-group display-for-all">
-							<h5>Secondary Button</h5>
-							<div class="form-group sub-form-group">
-								<label for="jumbomanager-button-secondary-text">Text</label>
-								<input id="jumbomanager-button-secondary-text" type="text" class="form-control" placeholder="TODO"/>
-							</div>
-							<div class="form-group sub-form-group">
-								<label for="jumbomanager-button-secondary-url">Url</label>
-								<input id="jumbomanager-button-secondary-url" type="text" class="form-control" placeholder="TODO"/>
-							</div>
-							<div class="form-group sub-form-group">
-								<label for="jumbomanager-button-secondary-color">Color&nbsp;</label>
-								<input id="jumbomanager-button-secondary-color" type="text" class="form-control" placeholder="TODO"/>
-							</div>
-							<div class="form-group sub-form-group">
-								<label for="jumbomanager-button-secondary-color">Background Color&nbsp;</label>
-								<input id="jumbomanager-button-secondary-bgcolor" type="text" class="form-control" placeholder="TODO"/>
-							</div>
-						</div>
-					</div>
-					<!-- <div class="control-group">
-						<h4>Current Slide - Label Layout</h4>
-						<div class="form-group">
-							<h5>Content</h5>
-							<label class="radio-inline"><input type="radio" name="labelContentRadio">None</label>
-							<label class="radio-inline"><input type="radio" name="labelContentRadio">Main</label>
-							<label class="radio-inline"><input type="radio" name="labelContentRadio">Main + Sub</label>
-						</div>
-						<div class="form-group">
-							<h5>Horizontal Alignment</h5>
-							<label class="radio-inline"><input type="radio" name="labelHorizontalRadio">Left</label>
-							<label class="radio-inline"><input type="radio" name="labelHorizontalRadio">Center</label>
-							<label class="radio-inline"><input type="radio" name="labelHorizontalRadio">Right</label>
-						</div>
-						<div class="form-group">
-							<h5>Vertical Alignment</h5>
-							<label class="radio-inline"><input type="radio" name="labelVerticalRadio">Top</label>
-							<label class="radio-inline"><input type="radio" name="labelVerticalRadio">Middle</label>
-							<label class="radio-inline"><input type="radio" name="labelVerticalRadio">Bottom</label>
-						</div>
-					</div> -->
-					<div class="control-group">
-						<h4>Grid</h4>
-						<div class="checkbox">
-							<label>
-								<input id="jumbomanager-grid-toggle" type="checkbox"/>Show Grid
-							</label>
-						</div>
-
-						<div class="form-group">
-							<div class="slider-container">
-								<label for="jumbomanager-grid-hgap">Horizontal Gap</label>
-								<div id="jumbomanager-grid-hgap"></div>
-							</div>
-						</div>
-
-						<div class="form-group">
-							<div class="slider-container">
-								<label for="jumbomanager-grid-vgap">Vertical Gap</label>
-								<div id="jumbomanager-grid-vgap"></div>
+						<div id="jumbomanager-controls-slide-buttons" class="panel-collapse collapse" role="tabpanel">
+							<div class="panel-body control-group">
+								<div class="form-group">
+									<label for="jumbomanager-button-content">Content</label>
+									<select id="jumbomanager-button-content" data-width="100%">
+										<option value="none">None</option>
+										<option value="primary">Primary</option>
+										<option value="all">Primary + Secondary</option>
+									</select>
+								</div>
+								<div class="form-group display-for-primary">
+									<div class="slider-container">
+										<label for="jumbomanager-button-d-halign">Desktop Horizontal Alignment</label>
+										<div id="jumbomanager-button-d-halign"></div>
+									</div>
+								</div>
+								<div class="form-group display-for-primary">
+									<div class="slider-container">
+										<label for="jumbomanager-button-d-valign">Desktop Vertical Alignment</label>
+										<div id="jumbomanager-button-d-valign"></div>
+									</div>
+								</div>
+								<div class="form-group display-for-primary">
+									<div class="slider-container">
+										<label for="jumbomanager-button-d-width">Desktop Width</label>
+										<div id="jumbomanager-button-d-minWidth"></div>
+									</div>
+								</div>
+								<div class="form-group display-for-primary">
+									<div class="slider-container">
+										<label for="jumbomanager-button-d-fontsize">Desktop Font Size</label>
+										<div id="jumbomanager-button-d-fontsize"></div>
+									</div>
+								</div>
+								<div class="form-group display-for-all">
+									<div class="slider-container">
+										<label for="jumbomanager-button-d-vgap">Desktop Vertical Gap</label>
+										<div id="jumbomanager-button-d-vgap"></div>
+									</div>
+								</div>
+								<div class="form-group display-for-primary">
+									<h5>Primary Button</h5>
+									<div class="form-group sub-form-group">
+										<label for="jumbomanager-button-primary-text">Text</label>
+										<input id="jumbomanager-button-primary-text" type="text" class="form-control" placeholder="TODO"/>
+									</div>
+									<div class="form-group sub-form-group">
+										<label for="jumbomanager-button-primary-url">Url</label>
+										<input id="jumbomanager-button-primary-url" type="text" class="form-control" placeholder="TODO"/>
+									</div>
+									<div class="form-group sub-form-group">
+										<label for="jumbomanager-button-primary-color">Color&nbsp;</label>
+										<input id="jumbomanager-button-primary-color" type="text" class="form-control" placeholder="TODO"/>
+									</div>
+									<div class="form-group sub-form-group">
+										<label for="jumbomanager-button-primary-color">Background Color&nbsp;</label>
+										<input id="jumbomanager-button-primary-bgcolor" type="text" class="form-control" placeholder="TODO"/>
+									</div>
+								</div>
+								<div class="form-group display-for-all">
+									<h5>Secondary Button</h5>
+									<div class="form-group sub-form-group">
+										<label for="jumbomanager-button-secondary-text">Text</label>
+										<input id="jumbomanager-button-secondary-text" type="text" class="form-control" placeholder="TODO"/>
+									</div>
+									<div class="form-group sub-form-group">
+										<label for="jumbomanager-button-secondary-url">Url</label>
+										<input id="jumbomanager-button-secondary-url" type="text" class="form-control" placeholder="TODO"/>
+									</div>
+									<div class="form-group sub-form-group">
+										<label for="jumbomanager-button-secondary-color">Color&nbsp;</label>
+										<input id="jumbomanager-button-secondary-color" type="text" class="form-control" placeholder="TODO"/>
+									</div>
+									<div class="form-group sub-form-group">
+										<label for="jumbomanager-button-secondary-color">Background Color&nbsp;</label>
+										<input id="jumbomanager-button-secondary-bgcolor" type="text" class="form-control" placeholder="TODO"/>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>

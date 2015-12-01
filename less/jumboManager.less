@@ -41,6 +41,22 @@
 		padding-left: 2rem;
 	}
 
+	.letterbox {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		width: 0;
+		background-color: rgba(0,0,0,0.75);
+
+		&.letterbox-left {
+			left: 0;
+		}
+
+		&.letterbox-right {
+			right: 0;
+		}
+	}
+
 	.tooltip-container {
 		border: 1px solid @black;
 		font-weight: bold;
@@ -53,6 +69,12 @@
 			content: "?";
 		}
 	}
+}
+
+#jumbomanager-responsive-slider {
+	.horizontal-align(absolute);
+	bottom: 3rem;
+	width: 25%;
 }
 
 #jumbomanager-canvas {
@@ -125,12 +147,8 @@
 }
 
 #jumbomanager-controls {
-	h4 {
-		margin-left: -1.5rem;	// temp
-	}
 	.control-group {
-		padding: 0 3rem;
-		border-bottom: 1px solid black; // temp
+		padding: 1.5rem 3rem 0;
 	}
 	.slider-container {
 		margin: 0 auto 4rem;
@@ -159,7 +177,7 @@
 	.ui-slider-pip {
 		display: none;
 	}
-	.ui-slider-pip:nth-child(20n+2) {
+	.ui-slider-pip:nth-child(5n+2) {
 		display: block;
 	}
 	.ui-slider-pip-first {
@@ -171,11 +189,14 @@
 	#jumbomanager-preview {
 		/*ghostly*/
 		// .ghostfix;
-		.vertical-align(absolute);
+		.center-align(absolute);
 	}
 	#jumbomanager-preview img, #jumbomanager-canvas,
 	#jumbomanager-previews, #jumbomanager-previews .image-container,
 	#jumbomanager-previews .image-container img {
 		height: 100%;
+	}
+	#jumbomanager-responsive-slider {
+		display: block;
 	}
 }

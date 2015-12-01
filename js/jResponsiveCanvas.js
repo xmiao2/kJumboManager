@@ -23,8 +23,8 @@
 	},
 
 	_resize = function($canvas, $parent) {
-		$canvas.prop("width", $parent.width());
-		$canvas.prop("height", $parent.height());
+		$canvas.prop("width", $parent.innerWidth());
+		$canvas.prop("height", $parent.innerHeight());
 	},
 
 	_showGrid = function($canvas) {

@@ -51,6 +51,7 @@ window.jumboManager = (function($){
 		tabletImageUploadId: "jumbomanager-tablet-image-upload",
 		mobileImageUploadId: "jumbomanager-mobile-image-upload",
 
+		responsiveSliderId: "jumbomanager-responsive-slider",
 		overlayId: "jumbomanager-overlay",
 
 		buttonsId: "jumbomanager-buttons",
@@ -59,6 +60,7 @@ window.jumboManager = (function($){
 		buttonDVAlignId: "jumbomanager-button-d-valign",
 		buttonDVGapId: "jumbomanager-button-d-vgap",
 		buttonDMinWidthId: "jumbomanager-button-d-minWidth",
+		buttonDFontSizeId: "jumbomanager-button-d-fontsize",
 
 		buttonPrimaryTextId: "jumbomanager-button-primary-text",
 		buttonPrimaryUrlId: "jumbomanager-button-primary-url",
@@ -74,7 +76,8 @@ window.jumboManager = (function($){
 		imageNotFoundUrl: "img/image_not_found.jpg",
 		maxPreviewCount: 10,	// This values should be a even number, or else be reduced to a even number
 		minPreviewContainerWidth: 70,
-		maxBgHeight: 400
+		maxBgHeight: 400,
+		buttonVPadding: "0.5rem"
 	},
 
 	MOBILE_VALUE_INDEX = 0,
@@ -230,7 +233,9 @@ window.jumboManager = (function($){
 		var _ui = {};
 		return {
 			create: function(jumboJson) {
-				var imageUrl = jumboJson.image.url,	//replace this after finalizing json structure
+				var desktopImageUrl = jumboJson.image.desktopUrl || imageNotFoundUrl,	//replace this after finalizing json structure
+				tabletImageUrl = jumboJson.image.tabletUrl || desktopImageUrl,	// tablet inherits desktop
+				mobileImageUrl = jumboJson.image.mobileUrl || tabletImageUrl,	// mobile inherits tablet
 				bgColor = jumboJson.image.bgColor,
 				mobileWidth = jumboJson.image.mobileWidth,
 				tabletWidth = jumboJson.image.tabletWidth,
@@ -239,6 +244,7 @@ window.jumboManager = (function($){
 				buttons = jumboJson.button.buttons,
 				vGap = jumboJson.button.vGap,
 				minWidth = jumboJson.button.minWidth,
+				fontSize = jumboJson.button.fontSize,
 
 				_focusPreviewImage = function() {
 					$("."+CURRENT_JUMBO).removeClass(CURRENT_JUMBO);
@@ -246,9 +252,21 @@ window.jumboManager = (function($){
 				},
 
 				_renderBackgroundImage = function() {
+
+					var responsiveImageUrl,
+					responsiveWidth = _ui.$background.width();
+
+					if(responsiveWidth > tabletWidth) {
+						responsiveImageUrl = desktopImageUrl;
+					} else if(responsiveWidth > mobileWidth) {
+						responsiveImageUrl = tabletImageUrl;
+					} else {
+						responsiveImageUrl = mobileImageUrl;
+					}
+
 					_ui.$background
 						.html(
-							getImageContainer(imageUrl, _renderOverlay)
+							getImageContainer(responsiveImageUrl, _renderOverlay)
 								.addClass(CANVAS_IMAGE_CONTAINER)
 								.css("background-color", bgColor)
 						)
@@ -289,7 +307,9 @@ window.jumboManager = (function($){
 										"background-color": button.bgColor,
 										"border-color": button.color,
 										"color": button.color,
-										"margin-top": vGap
+										"margin-top": vGap,
+										"font-size": fontSize,
+										"padding": settings.buttonVPadding + " 0"
 									})
 								)
 							;
@@ -328,22 +348,27 @@ window.jumboManager = (function($){
 
 					// Populate desktop horizontal alignment
 					_ui.$buttonDHAlign.slider({
-						value: parseInt(hAlign)
+						value: parseFloat(hAlign)
 					});
 
 					// Populate desktop vertical alignment
 					_ui.$buttonDVAlign.slider({
-						value: parseInt(vAlign)
+						value: parseFloat(vAlign)
 					});
 
 					// Populate desktop vertical gap
 					_ui.$buttonDVGap.slider({
-						value: parseInt(vGap)
+						value: parseFloat(vGap)
 					});
 
 					// Populate desktop width
 					_ui.$buttonDMinWidth.slider({
-						value: parseInt(minWidth)
+						value: parseFloat(minWidth)
+					});
+
+					// Populate desktop fontsize
+					_ui.$buttonDFontSize.slider({
+						value: parseFloat(fontSize)
 					});
 
 					_ui.$buttonPrimaryText.val(buttons[PRIMARY_BUTTON_INDEX].text);
@@ -436,7 +461,17 @@ window.jumboManager = (function($){
 
 					// Populate Desktop Image Location
 					_ui.$desktopImageSrc
-						.val(imageUrl)
+						.val(desktopImageUrl)
+					;
+
+					// Populate Tablet Image Location
+					_ui.$tabletImageSrc
+						.val(tabletImageUrl)
+					;
+
+					// Populate Mobile Image Location
+					_ui.$mobileImageSrc
+						.val(mobileImageUrl)
 					;
 
 					_renderButtonControls();
@@ -456,10 +491,10 @@ window.jumboManager = (function($){
 					;
 				},
 
-				$dom = getImageContainer(imageUrl);
+				$dom = getImageContainer(desktopImageUrl);
 				return {
 					getImageUrl: function() {
-						return imageUrl;
+						return desktopImageUrl;
 					},
 
 					getBgColor: function() {
@@ -518,6 +553,11 @@ window.jumboManager = (function($){
 						minWidth = _DMinWidth + unit;
 					},
 
+					setButtonDFontSize: function(_DFontSize, unit) {
+						unit = typeof unit !== 'undefined' ? unit : 'rem';
+						fontSize = _DFontSize + unit;
+					},
+
 					renderFocusImage: function() {
 						return _renderFocusImage.apply(this, arguments);
 					},
@@ -574,8 +614,26 @@ window.jumboManager = (function($){
 		});
 
 		$(window).resize(function(){
-			Jumbos.getCurrentJumbo().renderOverlay();
+			Jumbos.getCurrentJumbo().renderFocusImage();
+			initReponsiveSlider();
 		});
+	},
+
+	initReponsiveSlider = function() {
+		$(".letterbox").width(0);
+		ui.$preview.width("100%");
+		var canvasWidth = ui.$responsiveSlider.parent()[0].clientWidth;
+		ui.$responsiveSlider.slider({
+			min: 300,
+			max: canvasWidth,
+			step: 1,	// Setting this to 2 would resolve the jittering effect, which is caused by rounding
+			value: canvasWidth,
+			slide: function(event, _ui) {
+				ui.$preview.width(_ui.value);
+				$(".letterbox").width((canvasWidth - _ui.value) / 2);
+				Jumbos.getCurrentJumbo().renderFocusImage();
+			}
+		}).slider("pips", {suffix: "px"}).slider("float", {suffix: "px"});
 	},
 
 	initControls = function(options) {
@@ -592,6 +650,8 @@ window.jumboManager = (function($){
 				}
 			}).slider("pips", {suffix: "px"}).slider("float", {suffix: "px"});
 			
+			//TODO tablet max height
+			//TODO mobile max height
 		})({
 			initBgMaxHeight: options.initBgMaxHeight
 		});
@@ -726,6 +786,7 @@ window.jumboManager = (function($){
 						// in 10 milliseconds), it will adjust itself in the change event below
 						setTimeout(function(){
 							updateCustomRange(this);
+							Jumbos.getCurrentJumbo().renderFocusImage();
 						}.bind(this), 10);
 						updateJumboWidthsBySlider(ui.values);
 					},
@@ -769,7 +830,7 @@ window.jumboManager = (function($){
 
 		(function initComponentControls(options){
 			ui.$buttonContent.selectpicker({
-				style: "btn-primary"
+				style: "btn-info"
 			}).on("change", function(event){
 				switch($(this).val()) {
 					case 'none':
@@ -797,7 +858,7 @@ window.jumboManager = (function($){
 			ui.$buttonDHAlign.slider({
 				min: 0,
 				max: 100,
-				step: 1,
+				step: 0.1,
 				value: options.initDHAlign,
 				slide: updateDHAlign,
 				change: updateDHAlign
@@ -812,7 +873,7 @@ window.jumboManager = (function($){
 			ui.$buttonDVAlign.slider({
 				min: 0,
 				max: 100,
-				step: 1,
+				step: 0.1,
 				value: options.initDVAlign,
 				slide: updateDVAlign,
 				change: updateDVAlign
@@ -826,7 +887,7 @@ window.jumboManager = (function($){
 			ui.$buttonDVGap.slider({
 				min: 0,
 				max: 20,
-				step: 1,
+				step: 0.5,
 				value: options.initDVGap,
 				slide: updateDVGap,
 				change: updateDVGap
@@ -840,11 +901,25 @@ window.jumboManager = (function($){
 			ui.$buttonDMinWidth.slider({
 				min: 0,
 				max: 100,
-				step: 1,
+				step: 0.1,
 				value: options.initDMinWidth,
 				slide: updateDMinWidth,
 				change: updateDMinWidth
 			}).slider('pips', {rest: 'label', suffix: '%'}).slider('float', {suffix: '%'});
+
+			var updateDFontSize = function(event, _ui) {
+				Jumbos.getCurrentJumbo().setButtonDFontSize(_ui.value);
+				Jumbos.getCurrentJumbo().renderButtons();
+			};
+
+			ui.$buttonDFontSize.slider({
+				min: 1,
+				max: 4,
+				step: 0.1,
+				value: options.initDFontSize,
+				slide: updateDFontSize,
+				change: updateDFontSize
+			}).slider('pips', {suffix: 'rem'}).slider('float', {suffix: 'rem'});
 
 			ui.$buttonPrimaryText.on("keyup change", function(event) {
 				Jumbos.getCurrentJumbo().setButtonText(PRIMARY_BUTTON_INDEX, $(this).val());
@@ -873,6 +948,7 @@ window.jumboManager = (function($){
 			initDHAlign: options.initDHAlign || 50,		//%
 			initDVAlign: options.initDVAlign || 50,		//%
 			initDVGap: options.initDVGap || 1,			//rem
+			initDFontSize: options.initDFontSize || 1,	//rem
 			initDMinWidth: options.initDMinWidth || 10 	//%
 		});
 
@@ -961,7 +1037,7 @@ window.jumboManager = (function($){
 		};
 
 		initResponsivePreview();
-		$(window).on("resize", initResponsivePreview);
+		$(window).resize(initResponsivePreview);
 
 		// Temps
 		ui.$previews.sortable({
@@ -1019,6 +1095,7 @@ window.jumboManager = (function($){
 				});
 
 				$.when(Jumbos.init(ui), Jumbo.init(ui)).done(function(){
+					initReponsiveSlider();
 					initPreviewPagination();
 				}).fail(function(msg){
 					alert("Failed because: " + msg);

@@ -5,7 +5,7 @@
 
 window.jumboManagerREST = window.jumboManagerREST || (function($){
 
-	var delay = 250;	// Simulate how good the latency is
+	var delay = 0;	// Simulate how good the latency is
 
 	return {
 		// callback param: json array of image path
@@ -15,53 +15,59 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 				jumbos: [
 					{
 						image: {
-							url: "img/Ani-Nov-10-D.jpg",
+							desktopUrl: "img/Ani-Nov-10-D.jpg",
+							tabletUrl: "img/Ani-Nov-10-T.jpg",
+							mobileUrl: "img/Ani-Nov-10-T.jpg",
 							bgColor: "#ffffff",
 							mobileWidth: 700,
 							tabletWidth: 900
 						},
 						button: {
-							hAlign: "75%",
+							hAlign: "78.6%",
 							vAlign: "70%", 
 							vGap: "1rem",
-							minWidth: "15%",
+							fontSize: "1rem",
+							minWidth: "17%",
 							buttons: [
 								{
 									visible: true,
-									text: "primary",
+									text: "Silver",
 									url: "#",
 									color: "black",
-									bgColor: "rgba(0,0,0,0)"
+									bgColor: "rgba(127, 140, 234, 0.19)"
 								},
 								{
 									visible: true,
-									text: "secondary",
+									text: "Gold",
 									url: "#",
 									color: "black",
-									bgColor: "rgba(0,0,0,0)"
+									bgColor: "rgba(231, 231, 156, 0.39)"
 								}
 							]
 						}
 					},
 					{
 						image: {
-							url: "img/Bridal-D.jpg",
+							desktopUrl: "img/Bridal-D.jpg",
+							tabletUrl: "img/Bridal-T.jpg",
+							mobileUrl: "img/Bridal-T.jpg",
 							bgColor: "#aa7777",
 							mobileWidth: 400,
 							tabletWidth: 900
 						},
 						button: {
-							hAlign: "75%",
-							vAlign: "70%", 
+							hAlign: "91.3%",
+							vAlign: "50%", 
 							vGap: "1rem",
-							minWidth: "15%",
+							fontSize: "2.4rem",
+							minWidth: "26.3%",
 							buttons: [
 								{
 									visible: true,
-									text: "primary",
+									text: "Click here to shop",
 									url: "#",
 									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
+									bgColor: "#bc7a7a"
 								},
 								{
 									visible: false,
@@ -75,7 +81,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 					},
 					{
 						image: {
-							url: "img/Clearance-D.jpg",
+							desktopUrl: "img/Clearance-D.jpg",
 							bgColor: "rgba(0,0,0,0.8)",
 							mobileWidth: 500,
 							tabletWidth: 700
@@ -84,6 +90,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							hAlign: "75%",
 							vAlign: "70%", 
 							vGap: "1rem",
+							fontSize: "1rem",
 							minWidth: "15%",
 							buttons: [
 								{
@@ -105,7 +112,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 					},
 					{
 						image: {
-							url: "img/Holiday-Nov-10-D.jpg",
+							desktopUrl: "img/Holiday-Nov-10-D.jpg",
 							bgColor: "#791516",
 							mobileWidth: 600,
 							tabletWidth: 900
@@ -114,6 +121,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							hAlign: "75%",
 							vAlign: "70%", 
 							vGap: "1rem",
+							fontSize: "1rem",
 							minWidth: "15%",
 							buttons: [
 								{
@@ -135,7 +143,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 					},
 					{
 						image: {
-							url: "img/LG-Nov-10-D.jpg",
+							desktopUrl: "img/LG-Nov-10-D.jpg",
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
@@ -144,6 +152,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							hAlign: "75%",
 							vAlign: "70%", 
 							vGap: "1rem",
+							fontSize: "1rem",
 							minWidth: "15%",
 							buttons: [
 								{
@@ -165,7 +174,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 					},
 					{
 						image: {
-							url: "img/Pandora-Nov-10-D.jpg",
+							desktopUrl: "img/Pandora-Nov-10-D.jpg",
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
@@ -174,6 +183,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							hAlign: "75%",
 							vAlign: "70%", 
 							vGap: "1rem",
+							fontSize: "1rem",
 							minWidth: "15%",
 							buttons: [
 								{
@@ -195,7 +205,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 					},
 					{
 						image: {
-							url: "img/Pre-Black-Nov-19-D.jpg",
+							desktopUrl: "img/Pre-Black-Nov-19-D.jpg",
 							bgColor: "#791516",
 							mobileWidth: 600,
 							tabletWidth: 900
@@ -204,6 +214,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							hAlign: "75%",
 							vAlign: "70%", 
 							vGap: "1rem",
+							fontSize: "1rem",
 							minWidth: "15%",
 							buttons: [
 								{
@@ -225,7 +236,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 					},
 					{
 						image: {
-							url: "img/invalidurl.jpg",
+							desktopUrl: "img/invalidurl.jpg",
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
@@ -234,6 +245,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							hAlign: "75%",
 							vAlign: "70%", 
 							vGap: "1rem",
+							fontSize: "1rem",
 							minWidth: "15%",
 							buttons: [
 								{
@@ -255,7 +267,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 					},
 					{
 						image: {
-							url: "img/9.jpg",
+							desktopUrl: "img/9.jpg",
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
@@ -264,6 +276,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							hAlign: "75%",
 							vAlign: "70%", 
 							vGap: "1rem",
+							fontSize: "1rem",
 							minWidth: "15%",
 							buttons: [
 								{
@@ -285,7 +298,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 					},
 					{
 						image: {
-							url: "img/10.jpg",
+							desktopUrl: "img/10.jpg",
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
@@ -313,7 +326,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 					},
 					{
 						image: {
-							url: "img/7.jpg",
+							desktopUrl: "img/7.jpg",
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
@@ -341,7 +354,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 					},
 					{
 						image: {
-							url: "img/7.jpg",
+							desktopUrl: "img/7.jpg",
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
@@ -369,7 +382,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 					},
 					{
 						image: {
-							url: "img/8.jpg",
+							desktopUrl: "img/8.jpg",
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
@@ -397,7 +410,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 					},
 					{
 						image: {
-							url: "img/9.jpg",
+							desktopUrl: "img/9.jpg",
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
@@ -425,7 +438,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 					},
 					{
 						image: {
-							url: "img/10.jpg",
+							desktopUrl: "img/10.jpg",
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
@@ -453,7 +466,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 					},
 					{
 						image: {
-							url: "img/7.jpg",
+							desktopUrl: "img/7.jpg",
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
@@ -481,7 +494,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 					},
 					{
 						image: {
-							url: "img/7.jpg",
+							desktopUrl: "img/7.jpg",
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
@@ -509,7 +522,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 					},
 					{
 						image: {
-							url: "img/8.jpg",
+							desktopUrl: "img/8.jpg",
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
@@ -537,7 +550,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 					},
 					{
 						image: {
-							url: "img/9.jpg",
+							desktopUrl: "img/9.jpg",
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
@@ -565,7 +578,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 					},
 					{
 						image: {
-							url: "img/10.jpg",
+							desktopUrl: "img/10.jpg",
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
@@ -593,7 +606,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 					},
 					{
 						image: {
-							url: "img/7.jpg",
+							desktopUrl: "img/7.jpg",
 							bgColor: "lightblue",
 							mobileWidth: 600,
 							tabletWidth: 900
