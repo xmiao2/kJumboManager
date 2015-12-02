@@ -21,6 +21,7 @@ window.jumboManager = (function($){
 	DESKTOP_RANGE_BACKGROUND = "desktop-range-background",
 	OVERLAY_BUTTON = "overlay-button",
 	OVERLAY_BUTTON_PRIMARY = "overlay-button-primary",
+	IMAGE_REMOVE = "image-remove",
 
 	// Instance variables
 	settings = {},
@@ -71,6 +72,10 @@ window.jumboManager = (function($){
 		buttonSecondaryColorId: "jumbomanager-button-secondary-color",
 		buttonSecondaryBgColorId: "jumbomanager-button-secondary-bgcolor",
 
+		addImageId: "jumbomanager-add-image",
+		saveCanvasId: "jumbomanager-save-canvas",
+
+		//TODO add labels
 		labelsId: "jumbomanager-labels",
 
 		imageNotFoundUrl: "img/image_not_found.jpg",
@@ -89,7 +94,9 @@ window.jumboManager = (function($){
 	// Inner classes
 	Jumbos = (function() {
 
-		var INIT_RENDER_IDX = 0,
+		var
+		DEFAULT_JUMBO_JSON,
+		INIT_RENDER_IDX = 0,
 		_ui = {},
 		_objects = [],
 		_currentJumbo = {},
@@ -102,6 +109,7 @@ window.jumboManager = (function($){
 			var dfd = $.Deferred();
 
 			$.when(jumboManagerREST.ajaxFetchJumbos()).done(function(data){
+				// TODO save max heights here
 				$.each(data, function(idx, jumboJson){
 					_objects.push(Jumbo.create(jumboJson));
 				});
@@ -111,6 +119,72 @@ window.jumboManager = (function($){
 			});
 
 			return dfd.promise();
+		},
+
+		loadDefaultJumbo = function() {
+			var dfd = $.Deferred();
+
+			$.when(jumboManagerREST.ajaxFetchDefaultJumbo()).done(function(data){
+				DEFAULT_JUMBO_JSON = data;
+				dfd.resolve();
+			}).fail(function(){
+				dfd.reject("Default jumbo fetching ajax failed");
+			});
+
+			return dfd.promise();
+		},
+
+		_addNewJumbo = function() {
+			var newJumbo = Jumbo.create(DEFAULT_JUMBO_JSON);
+			newJumbo.renderPreviewImage.apply(newJumbo, null);
+			_objects.push(newJumbo);
+			initPreviewPagination();
+			return newJumbo;
+		},
+
+		_serialize = function() {
+			//TODO serialize
+		},
+
+		_reorder = function(oldIndex, newIndex) {
+			if(oldIndex < 0 || oldIndex >= _objects.length ||
+				newIndex < 0 || newIndex >= _objects.length) {
+				console.log("Invalid operation: index is out of bound")
+				return;
+			}
+
+			_objects.move(oldIndex, newIndex);
+		},
+
+		_remove = function(index) {
+
+			if(index < 0 || index >= _objects.length) {
+				console.log("Invalid operation: index is out of bound")
+				return;
+			}
+
+			var jumboToRemove = _objects[index],
+			isRemovingCurrent = (index === _getCurrentJumboIndex());
+			_objects.remove(index);
+
+			// Create a new jumbo if last jumbo is removed
+			if(_objects.length === 0) {
+				Jumbos.addNewJumbo().renderFocusImage();
+				return;
+			}
+
+			// removing the current jumbo
+			if(isRemovingCurrent) {
+				if(index >= _objects.length) {
+					index -= 1;
+				}
+				_objects[index].renderFocusImage();
+			}
+		},
+
+		_removeJumbo = function(jumbo) {
+			var index = _objects.indexOf(jumbo);
+			_remove(index);
 		},
 
 		_renderFirstJumbo = function() {
@@ -204,12 +278,29 @@ window.jumboManager = (function($){
 				return _applyAllWidths(widths);
 			},
 
+			serialize: function() {
+				return _serialize();
+			},
+
+			reorder: function(oldIndex, newIndex) {
+				return _reorder(oldIndex, newIndex);
+			},
+
+			addNewJumbo: function() {
+				return _addNewJumbo();
+			},
+
+			removeJumbo: function(jumbo) {
+				return _removeJumbo(jumbo);
+			},
+
 			init: function(ui) {
 				_ui = ui;
 
 				var dfd = $.Deferred(),
 				promises = [
-					loadJumbos()
+					loadJumbos(),
+					loadDefaultJumbo()
 				];
 
 				$.when.apply(this, promises).done(function(){
@@ -233,7 +324,8 @@ window.jumboManager = (function($){
 		var _ui = {};
 		return {
 			create: function(jumboJson) {
-				var desktopImageUrl = jumboJson.image.desktopUrl || imageNotFoundUrl,	//replace this after finalizing json structure
+				var
+				desktopImageUrl = jumboJson.image.desktopUrl || imageNotFoundUrl,	//replace this after finalizing json structure
 				tabletImageUrl = jumboJson.image.tabletUrl || desktopImageUrl,	// tablet inherits desktop
 				mobileImageUrl = jumboJson.image.mobileUrl || tabletImageUrl,	// mobile inherits tablet
 				bgColor = jumboJson.image.bgColor,
@@ -245,6 +337,17 @@ window.jumboManager = (function($){
 				vGap = jumboJson.button.vGap,
 				minWidth = jumboJson.button.minWidth,
 				fontSize = jumboJson.button.fontSize,
+
+				$dom = {},
+
+				_serialize = function() {
+					//TODO serialize
+				},
+
+				_remove = function() {
+					Jumbos.removeJumbo(this);
+					$dom.remove();
+				},
 
 				_focusPreviewImage = function() {
 					$("."+CURRENT_JUMBO).removeClass(CURRENT_JUMBO);
@@ -479,6 +582,27 @@ window.jumboManager = (function($){
 
 				_renderPreviewImage = function() {
 					var self = this;
+
+					$dom = getImageContainer(desktopImageUrl)
+						.css("position", "relative")
+						.append($("<div></div>")	// Remove button
+							.addClass(IMAGE_REMOVE)
+							.append($("<span></span>")
+								.addClass("fa fa-times-circle fa-2x")
+							)
+							.on("click", function(event){
+								_remove.apply(self, arguments);
+
+								xmBootstrapAlert.alert({
+									content: "Image removed",
+									fade: true,
+									showClose: false
+								});
+
+							})
+						)
+					;
+
 					_ui.$previews
 						.append(
 							$dom
@@ -489,9 +613,7 @@ window.jumboManager = (function($){
 								})
 						)
 					;
-				},
-
-				$dom = getImageContainer(desktopImageUrl);
+				};
 				return {
 					getImageUrl: function() {
 						return desktopImageUrl;
@@ -580,6 +702,14 @@ window.jumboManager = (function($){
 
 					renderPreviewImage: function() {
 						return _renderPreviewImage.apply(this, arguments);
+					},
+
+					serialize: function() {
+						return _serialize.apply(this, arguments);
+					},
+
+					remove: function() {
+						return _remove.apply(this, arguments);
 					}
 				}
 			},
@@ -622,21 +752,71 @@ window.jumboManager = (function($){
 	initReponsiveSlider = function() {
 		$(".letterbox").width(0);
 		ui.$preview.width("100%");
-		var canvasWidth = ui.$responsiveSlider.parent()[0].clientWidth;
+
+		var canvasWidth = ui.$responsiveSlider.parent()[0].clientWidth,
+		getCurrentResponsiveClass = function(width){
+			if(width < Jumbos.getCurrentJumbo().getMobileWidth()) {
+				return MOBILE_RANGE_BACKGROUND;
+			} else if(width < Jumbos.getCurrentJumbo().getTabletWidth()) {
+				return TABLET_RANGE_BACKGROUND;
+			} else {
+				return DESKTOP_RANGE_BACKGROUND;
+			}
+		},
+		updateSliderRangeColor = function($rangeElement, width) {
+			$rangeElement
+				.removeClass(MOBILE_RANGE_BACKGROUND)
+				.removeClass(TABLET_RANGE_BACKGROUND)
+				.removeClass(DESKTOP_RANGE_BACKGROUND)
+				.addClass(getCurrentResponsiveClass(width));
+		};
+
 		ui.$responsiveSlider.slider({
+			range: "min",
 			min: 300,
 			max: canvasWidth,
 			step: 1,	// Setting this to 2 would resolve the jittering effect, which is caused by rounding
 			value: canvasWidth,
+			create: function(event, _ui) {
+				updateSliderRangeColor($(event.target).children(".ui-slider-range"), _ui.value);
+			},
 			slide: function(event, _ui) {
 				ui.$preview.width(_ui.value);
 				$(".letterbox").width((canvasWidth - _ui.value) / 2);
 				Jumbos.getCurrentJumbo().renderFocusImage();
+
+				// Set color
+				updateSliderRangeColor($(_ui.handle).siblings(".ui-slider-range"), _ui.value);
 			}
 		}).slider("pips", {suffix: "px"}).slider("float", {suffix: "px"});
 	},
 
 	initControls = function(options) {
+
+		(function initToolbarControls(options){
+			ui.$addImage.on("click", function(){
+				Jumbos.addNewJumbo().renderFocusImage();
+
+				xmBootstrapAlert.alert({
+					content: "Image added",
+					fade: true,
+					showClose: false
+				});
+			});
+			ui.$saveCanvas.on("click", function(){
+				//TODO saveCanvas
+				debugger;
+
+				xmBootstrapAlert.alert({
+					content: "Canvas saved",
+					fade: true,
+					showClose: false
+				});
+			});
+		})({
+
+		});
+
 		(function initGeneralControls(options){
 			ui.$bgMaxHeight.slider({
 				min: 50,
@@ -820,6 +1000,17 @@ window.jumboManager = (function($){
 			});
 
 			ui.$desktopImageUpload.on("change", function(event){
+				//TODO upload images
+				debugger;
+			});
+
+			ui.$tabletImageUpload.on("change", function(event){
+				//TODO upload images
+				debugger;
+			});
+
+			ui.$mobileImageUpload.on("change", function(event){
+				//TODO upload images
 				debugger;
 			});
 		})({
@@ -1047,9 +1238,14 @@ window.jumboManager = (function($){
 			delay: 150,
 			start: function(event, ui) {
 				ui.placeholder.width(ui.helper.width());
+				$(this).attr('data-previndex', ui.item.index());
 			},
-			stop: function(event, ui) {
-				debugger;
+			deactivate: function(event, ui) {
+				// reorder Jumbos _objects
+				var newIndex = ui.item.index();
+				var oldIndex = parseInt($(this).attr("data-previndex"));
+				$(this).removeAttr("data-previndex");
+				Jumbos.reorder(oldIndex, newIndex);
 			}
 		});	
 	},

@@ -7,11 +7,14 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 
 	var delay = 0;	// Simulate how good the latency is
 
+	var imageNewUrl = "img/image_new.jpg";
+
 	return {
 		// callback param: json array of image path
 		ajaxFetchJumbos: function() {
 			var dfd = $.Deferred();
 			var jumbos = {
+				// TODO save max heights here
 				jumbos: [
 					{
 						image: {
@@ -640,6 +643,43 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 			}, delay);
 
 			return dfd;
+		},
+
+		ajaxFetchDefaultJumbo: function() {
+			var DEFAULT_JUMBO_JSON = {
+				image: {
+					desktopUrl: imageNewUrl,
+					tabletUrl: imageNewUrl,
+					mobileUrl: imageNewUrl,
+					bgColor: "#ffffff",
+					mobileWidth: 600,
+					tabletWidth: 900
+				},
+				button: {
+					hAlign: "78.6%",
+					vAlign: "70%", 
+					vGap: "1rem",
+					fontSize: "1rem",
+					minWidth: "17%",
+					buttons: [
+						{
+							visible: false,
+							text: "Silver",
+							url: "#",
+							color: "black",
+							bgColor: "rgba(127, 140, 234, 0.19)"
+						},
+						{
+							visible: false,
+							text: "Gold",
+							url: "#",
+							color: "black",
+							bgColor: "rgba(231, 231, 156, 0.39)"
+						}
+					]
+				}
+			};
+			return DEFAULT_JUMBO_JSON;
 		},
 
 		ajaxUploadImage: function(file) {
