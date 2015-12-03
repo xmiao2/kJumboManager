@@ -1,0 +1,22 @@
+<html>
+<head>
+	<title>Preview</title>
+	<!-- Slick Slider -->
+	<link rel="stylesheet" href="lib/slick/slick.css">
+	<link rel="stylesheet" href="lib/slick/slick-theme.css">
+</head>
+<body>
+	<div id="preview"></div>
+
+	<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+	<!-- Slick Slider -->
+	<script src="lib/slick/slick.min.js"></script>
+	<script src="js/jumboGenerator.js"></script>
+	<script>
+		$(function(){
+			var json = JSON.parse(localStorage.getItem("jumbomanager-preview"));
+			$("#preview").generateJumbo(json);
+		});
+	</script>
+</body>
+</html>

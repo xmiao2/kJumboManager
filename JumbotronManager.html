@@ -37,6 +37,10 @@
 							<i class="fa fa-floppy-o"></i> Save
 						</button>
 
+						<button id="jumbomanager-save-preview-canvas" type="button" class="btn btn-success">
+							<i class="fa fa-floppy-o"></i> Save & Preview
+						</button>
+
 						<button id="jumbomanager-add-image" type="button" class="btn btn-info">
 							<i class="fa fa-plus"></i> Add Image
 						</button>
@@ -87,8 +91,26 @@
 							<div class="panel-body control-group">
 								<div class="form-group">
 									<div class="slider-container">
-										<label for="jumbomanager-bg-max-height">Jumbotron Max Height</label>
-										<div id="jumbomanager-bg-max-height"></div>
+										<label for="jumbomanager-desktop-max-height">Desktop Max Height</label>
+										<div id="jumbomanager-desktop-max-height"></div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="slider-container">
+										<label for="jumbomanager-tablet-max-height">Tablet Max Height</label>
+										<div id="jumbomanager-tablet-max-height"></div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="slider-container">
+										<label for="jumbomanager-mobile-max-height">Mobile Max Height</label>
+										<div id="jumbomanager-mobile-max-height"></div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="slider-container">
+										<label for="jumbomanager-responsive-widths">Responsive Widths</label>
+										<div id="jumbomanager-responsive-widths"></div>
 									</div>
 								</div>
 							</div>
@@ -134,13 +156,6 @@
 									<input type="file" id="jumbomanager-mobile-image-upload" value="upload" class="hidden"/>
 									<small>[<a onclick="getElementById('jumbomanager-mobile-image-upload').click();" href="javascript:void(0);">Upload</a>]</small>
 									<input id="jumbomanager-mobile-image-src" type="text" class="form-control" placeholder="Not available" disabled/>
-								</div>
-								<div class="form-group">
-									<div class="slider-container">
-										<label for="jumbomanager-bg-max-height">Responsive Widths (px)</label>
-										<small>[<a class="" id="jumbomanager-apply-all-responsive-widths" href="javascript:void(0);">Apply settings to all slides</a>]</small>
-										<div id="jumbomanager-responsive-widths"></div>
-									</div>
 								</div>
 							</div>
 						</div>

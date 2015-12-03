@@ -40,11 +40,12 @@ window.jumboManager = (function($){
 		gridVGapId: "jumbomanager-grid-vgap",
 		gridHGapId: "jumbomanager-grid-hgap",
 		slideBgColorId: "jumbomanager-slide-bg-color",
-		bgMaxHeightId: "jumbomanager-bg-max-height",
+		desktopMaxHeightId: "jumbomanager-desktop-max-height",
+		tabletMaxHeightId: "jumbomanager-tablet-max-height",
+		mobileMaxHeightId: "jumbomanager-mobile-max-height",
 		prevSlideId: "jumbomanager-prevSlide",
 		nextSlideId: "jumbomanager-nextSlide",
 		responsiveWidthsId: "jumbomanager-responsive-widths",
-		applyAllWidthId: "jumbomanager-apply-all-responsive-widths",
 		desktopImageSrcId: "jumbomanager-desktop-image-src",
 		tabletImageSrcId: "jumbomanager-tablet-image-src",
 		mobileImageSrcId: "jumbomanager-mobile-image-src",
@@ -74,11 +75,13 @@ window.jumboManager = (function($){
 
 		addImageId: "jumbomanager-add-image",
 		saveCanvasId: "jumbomanager-save-canvas",
+		savePreviewCanvasId: "jumbomanager-save-preview-canvas",
 
 		//TODO add labels
 		labelsId: "jumbomanager-labels",
 
 		imageNotFoundUrl: "img/image_not_found.jpg",
+		previewUrl: "./JumbotronPreview.html",
 		maxPreviewCount: 10,	// This values should be a even number, or else be reduced to a even number
 		minPreviewContainerWidth: 70,
 		maxBgHeight: 400,
@@ -101,6 +104,8 @@ window.jumboManager = (function($){
 		_objects = [],
 		_currentJumbo = {},
 
+		json = {},
+
 		validate = function() {
 			return _objects && !!_objects.length;
 		},
@@ -109,8 +114,11 @@ window.jumboManager = (function($){
 			var dfd = $.Deferred();
 
 			$.when(jumboManagerREST.ajaxFetchJumbos()).done(function(data){
-				// TODO save max heights here
-				$.each(data, function(idx, jumboJson){
+				//load global settings
+				json = data,
+
+				//load jumbos
+				$.each(data.jumbos, function(idx, jumboJson){
 					_objects.push(Jumbo.create(jumboJson));
 				});
 				dfd.resolve();
@@ -143,7 +151,18 @@ window.jumboManager = (function($){
 		},
 
 		_serialize = function() {
-			//TODO serialize
+			// reset jumbos array
+			json.jumbos = [];
+
+			// serialize each object
+			$.each(_objects, function(idx, jumbo){
+				json.jumbos.push(jumbo.serialize());
+			});
+			return json;
+		},
+
+		_save = function() {
+			return jumboManagerREST.ajaxSaveCanvas(_serialize());
 		},
 
 		_reorder = function(oldIndex, newIndex) {
@@ -229,14 +248,25 @@ window.jumboManager = (function($){
 			_objects[prevIndex].renderFocusImage();
 		},
 
-		_applyAllWidths = function(widths) {
-			var mobileWidth = widths[MOBILE_VALUE_INDEX],
-			tabletWidth = widths[TABLET_VALUE_INDEX];
-
-			$.each(_objects, function(idx, jumbo){
-				jumbo.setMobileWidth(mobileWidth);
-				jumbo.setTabletWidth(tabletWidth);
+		_renderControls = function() {
+			ui.$desktopMaxHeight.slider({
+				value: json.desktopMaxHeight
 			});
+
+			ui.$tabletMaxHeight.slider({
+				value: json.tabletMaxHeight
+			});
+
+			ui.$mobileMaxHeight.slider({
+				value: json.mobileMaxHeight
+			});
+
+			// Populate Responsive Widths slider values
+			_ui.$responsiveWidths
+				.slider({
+					values: [json.mobileWidth, json.tabletWidth]
+				})
+			;
 		},
 
 		initRenderBackgroundImage = function() {
@@ -250,6 +280,46 @@ window.jumboManager = (function($){
 		};
 		
 		return {
+			getDesktopMaxHeight: function() {
+				return json.desktopMaxHeight;
+			},
+
+			getTabletMaxHeight: function() {
+				return json.tabletMaxHeight;
+			},
+
+			getMobileMaxHeight: function() {
+				return json.mobileMaxHeight;
+			},
+
+			setDesktopMaxHeight: function(_desktopMaxHeight) {
+				json.desktopMaxHeight = _desktopMaxHeight;
+			},
+
+			setTabletMaxHeight: function(_tabletMaxHeight) {
+				json.tabletMaxHeight = _tabletMaxHeight;
+			},
+
+			setMobileMaxHeight: function(_mobileMaxHeight) {
+				json.mobileMaxHeight = _mobileMaxHeight;
+			},
+
+			getMobileWidth: function() {
+				return json.mobileWidth;
+			},
+
+			setMobileWidth: function(_mobileWidth) {
+				json.mobileWidth = _mobileWidth;
+			},
+
+			getTabletWidth: function() {
+				return json.tabletWidth;
+			},
+
+			setTabletWidth: function(_tabletWidth) {
+				json.tabletWidth = _tabletWidth;
+			},
+
 			getJumbos: function() {
 				return _objects;
 			},
@@ -274,8 +344,8 @@ window.jumboManager = (function($){
 				return _renderPrevJumbo();
 			},
 
-			applyAllWidths: function(widths) {
-				return _applyAllWidths(widths);
+			save: function() {
+				return _save();
 			},
 
 			serialize: function() {
@@ -307,6 +377,7 @@ window.jumboManager = (function($){
 					if(validate()) {
 						initRenderPreviewImages();
 						initRenderBackgroundImage();
+						_renderControls();
 						dfd.resolve();
 					} else {
 						dfd.reject("Failed to validate jumbos");
@@ -325,23 +396,12 @@ window.jumboManager = (function($){
 		return {
 			create: function(jumboJson) {
 				var
-				desktopImageUrl = jumboJson.image.desktopUrl || imageNotFoundUrl,	//replace this after finalizing json structure
-				tabletImageUrl = jumboJson.image.tabletUrl || desktopImageUrl,	// tablet inherits desktop
-				mobileImageUrl = jumboJson.image.mobileUrl || tabletImageUrl,	// mobile inherits tablet
-				bgColor = jumboJson.image.bgColor,
-				mobileWidth = jumboJson.image.mobileWidth,
-				tabletWidth = jumboJson.image.tabletWidth,
-				hAlign = jumboJson.button.hAlign,
-				vAlign = jumboJson.button.vAlign,
-				buttons = jumboJson.button.buttons,
-				vGap = jumboJson.button.vGap,
-				minWidth = jumboJson.button.minWidth,
-				fontSize = jumboJson.button.fontSize,
+				json = jumboJson,
 
 				$dom = {},
 
 				_serialize = function() {
-					//TODO serialize
+					return json;
 				},
 
 				_remove = function() {
@@ -357,24 +417,28 @@ window.jumboManager = (function($){
 				_renderBackgroundImage = function() {
 
 					var responsiveImageUrl,
+					maxHeight,
 					responsiveWidth = _ui.$background.width();
 
-					if(responsiveWidth > tabletWidth) {
-						responsiveImageUrl = desktopImageUrl;
-					} else if(responsiveWidth > mobileWidth) {
-						responsiveImageUrl = tabletImageUrl;
+					if(responsiveWidth > Jumbos.getTabletWidth()) {
+						responsiveImageUrl = json.image.desktopUrl;
+						maxHeight = Jumbos.getDesktopMaxHeight();
+					} else if(responsiveWidth > Jumbos.getMobileWidth()) {
+						responsiveImageUrl = json.image.tabletUrl || json.image.desktopUrl;
+						maxHeight = Jumbos.getTabletMaxHeight();
 					} else {
-						responsiveImageUrl = mobileImageUrl;
+						responsiveImageUrl = json.image.mobileUrl || json.image.tabletUrl || json.image.desktopUrl;
+						maxHeight = Jumbos.getMobileMaxHeight();
 					}
 
 					_ui.$background
 						.html(
 							getImageContainer(responsiveImageUrl, _renderOverlay)
 								.addClass(CANVAS_IMAGE_CONTAINER)
-								.css("background-color", bgColor)
+								.css("background-color", json.image.bgColor)
 						)
 						.find("img")
-							.css("maxHeight",settings.maxBgHeight)
+							.css("maxHeight", maxHeight)
 					;
 				},
 
@@ -394,13 +458,13 @@ window.jumboManager = (function($){
 						.css({
 							display: "inline-block",
 							position: "absolute",
-							left: hAlign,
-							top: vAlign,
-							transform: "translate(-" + hAlign + ", -" + vAlign + ")",
-							minWidth: minWidth
+							left: json.button.hAlign,
+							top: json.button.vAlign,
+							transform: "translate(-" + json.button.hAlign + ", -" + json.button.vAlign + ")",
+							minWidth: json.button.minWidth
 						});
 
-					$.each(buttons, function(idx, button){
+					$.each(json.button.buttons, function(idx, button){
 						if(button.visible){
 							_ui.$buttons
 								.append($("<div></div>")
@@ -410,8 +474,8 @@ window.jumboManager = (function($){
 										"background-color": button.bgColor,
 										"border-color": button.color,
 										"color": button.color,
-										"margin-top": vGap,
-										"font-size": fontSize,
+										"margin-top": json.button.vGap,
+										"font-size": json.button.fontSize,
 										"padding": settings.buttonVPadding + " 0"
 									})
 								)
@@ -439,10 +503,10 @@ window.jumboManager = (function($){
 				_renderButtonControls = function() {
 					// Populate Button Content
 					$(".display-for-primary, .display-for-all").hide();
-					if(buttons[PRIMARY_BUTTON_INDEX].visible && buttons[SECONDARY_BUTTON_INDEX].visible) {
+					if(json.button.buttons[PRIMARY_BUTTON_INDEX].visible && json.button.buttons[SECONDARY_BUTTON_INDEX].visible) {
 						_ui.$buttonContent.selectpicker("val", "all");
 						$(".display-for-primary, .display-for-all").show();
-					} else if(buttons[PRIMARY_BUTTON_INDEX].visible) {
+					} else if(json.button.buttons[PRIMARY_BUTTON_INDEX].visible) {
 						_ui.$buttonContent.selectpicker("val", "primary");
 						$(".display-for-primary").show();
 					} else {
@@ -451,33 +515,33 @@ window.jumboManager = (function($){
 
 					// Populate desktop horizontal alignment
 					_ui.$buttonDHAlign.slider({
-						value: parseFloat(hAlign)
+						value: parseFloat(json.button.hAlign)
 					});
 
 					// Populate desktop vertical alignment
 					_ui.$buttonDVAlign.slider({
-						value: parseFloat(vAlign)
+						value: parseFloat(json.button.vAlign)
 					});
 
 					// Populate desktop vertical gap
 					_ui.$buttonDVGap.slider({
-						value: parseFloat(vGap)
+						value: parseFloat(json.button.vGap)
 					});
 
 					// Populate desktop width
 					_ui.$buttonDMinWidth.slider({
-						value: parseFloat(minWidth)
+						value: parseFloat(json.button.minWidth)
 					});
 
 					// Populate desktop fontsize
 					_ui.$buttonDFontSize.slider({
-						value: parseFloat(fontSize)
+						value: parseFloat(json.button.fontSize)
 					});
 
-					_ui.$buttonPrimaryText.val(buttons[PRIMARY_BUTTON_INDEX].text);
-					_ui.$buttonSecondaryText.val(buttons[SECONDARY_BUTTON_INDEX].text);
-					_ui.$buttonPrimaryUrl.val(buttons[PRIMARY_BUTTON_INDEX].url);
-					_ui.$buttonSecondaryUrl.val(buttons[SECONDARY_BUTTON_INDEX].url);
+					_ui.$buttonPrimaryText.val(json.button.buttons[PRIMARY_BUTTON_INDEX].text);
+					_ui.$buttonSecondaryText.val(json.button.buttons[SECONDARY_BUTTON_INDEX].text);
+					_ui.$buttonPrimaryUrl.val(json.button.buttons[PRIMARY_BUTTON_INDEX].url);
+					_ui.$buttonSecondaryUrl.val(json.button.buttons[SECONDARY_BUTTON_INDEX].url);
 
 					// Populate color and background color
 					var
@@ -499,7 +563,7 @@ window.jumboManager = (function($){
 
 					_ui.$buttonPrimaryColor
 						.spectrum($.extend({}, buttonSpectrumDefaults, {
-							color: buttons[PRIMARY_BUTTON_INDEX].color,
+							color: json.button.buttons[PRIMARY_BUTTON_INDEX].color,
 							move: function(color) {
 								updateButtonColor(PRIMARY_BUTTON_INDEX, color);
 								_renderButtons();
@@ -508,7 +572,7 @@ window.jumboManager = (function($){
 					;
 					_ui.$buttonSecondaryColor
 						.spectrum($.extend({}, buttonSpectrumDefaults, {
-							color: buttons[SECONDARY_BUTTON_INDEX].color,
+							color: json.button.buttons[SECONDARY_BUTTON_INDEX].color,
 							move: function(color) {
 								updateButtonColor(SECONDARY_BUTTON_INDEX, color);
 								_renderButtons();
@@ -517,7 +581,7 @@ window.jumboManager = (function($){
 					;
 					_ui.$buttonPrimaryBgColor
 						.spectrum($.extend({}, buttonSpectrumDefaults, {
-							color: buttons[PRIMARY_BUTTON_INDEX].bgColor,
+							color: json.button.buttons[PRIMARY_BUTTON_INDEX].bgColor,
 							move: function(color) {
 								updateButtonBgColor(PRIMARY_BUTTON_INDEX, color);
 								_renderButtons();
@@ -526,7 +590,7 @@ window.jumboManager = (function($){
 					;
 					_ui.$buttonSecondaryBgColor
 						.spectrum($.extend({}, buttonSpectrumDefaults, {
-							color: buttons[SECONDARY_BUTTON_INDEX].bgColor,
+							color: json.button.buttons[SECONDARY_BUTTON_INDEX].bgColor,
 							move: function(color) {
 								updateButtonBgColor(SECONDARY_BUTTON_INDEX, color);
 								_renderButtons();
@@ -540,7 +604,7 @@ window.jumboManager = (function($){
 					// Populate background color picker value
 					_ui.$slideBgColor
 						.spectrum({
-							color: bgColor,
+							color: json.image.bgColor,
 							showAlpha: true,
 							showInput: true,
 							allowEmpty: true,
@@ -555,26 +619,19 @@ window.jumboManager = (function($){
 						})
 					;
 
-					// Populate Responsive Widths slider values
-					_ui.$responsiveWidths
-						.slider({
-							values: [mobileWidth, tabletWidth]
-						})
-					;
-
 					// Populate Desktop Image Location
 					_ui.$desktopImageSrc
-						.val(desktopImageUrl)
+						.val(json.image.desktopUrl)
 					;
 
 					// Populate Tablet Image Location
 					_ui.$tabletImageSrc
-						.val(tabletImageUrl)
+						.val(json.image.tabletUrl)
 					;
 
 					// Populate Mobile Image Location
 					_ui.$mobileImageSrc
-						.val(mobileImageUrl)
+						.val(json.image.mobileUrl)
 					;
 
 					_renderButtonControls();
@@ -583,7 +640,7 @@ window.jumboManager = (function($){
 				_renderPreviewImage = function() {
 					var self = this;
 
-					$dom = getImageContainer(desktopImageUrl)
+					$dom = getImageContainer(json.image.desktopUrl)
 						.css("position", "relative")
 						.append($("<div></div>")	// Remove button
 							.addClass(IMAGE_REMOVE)
@@ -615,69 +672,45 @@ window.jumboManager = (function($){
 					;
 				};
 				return {
-					getImageUrl: function() {
-						return desktopImageUrl;
-					},
-
-					getBgColor: function() {
-						return bgColor;
-					},
-
 					setBgColor: function(rgba) {
-						bgColor = rgba;
-					},
-
-					getMobileWidth: function() {
-						return mobileWidth;
-					},
-
-					setMobileWidth: function(_mobileWidth) {
-						mobileWidth = _mobileWidth;
-					},
-
-					getTabletWidth: function() {
-						return tabletWidth;
-					},
-
-					setTabletWidth: function(_tabletWidth) {
-						tabletWidth = _tabletWidth;
+						json.image.bgColor = rgba;
 					},
 
 					setButtonVisibility: function(idx, visible) {
-						buttons[idx].visible = visible;
+						json.button.buttons[idx].visible = visible;
 					},
 
 					setButtonText: function(idx, text) {
-						buttons[idx].text = text;
+						json.button.buttons[idx].text = text;
 					},
 
 					setButtonUrl: function(idx, url) {
-						buttons[idx].url = url;
+						json.button.buttons[idx].url = url;
 					},
 
 					setButtonDHAlign: function(_DHAlign, unit) {
 						unit = typeof unit !== 'undefined' ? unit : '%';
-						hAlign = _DHAlign + unit;
+						json.button.hAlign = _DHAlign + unit;
 					},
 
 					setButtonDVAlign: function(_DVAlign, unit) {
 						unit = typeof unit !== 'undefined' ? unit : '%';
-						vAlign = _DVAlign + unit;
+						json.button.vAlign = _DVAlign + unit;
 					},
 
 					setButtonDVGap: function(_DVGap, unit) {
 						unit = typeof unit !== 'undefined' ? unit : 'rem';
-						vGap = _DVGap + unit;
+						json.button.vGap = _DVGap + unit;
 					},
 
 					setButtonDMinWidth: function(_DMinWidth, unit) {
 						unit = typeof unit !== 'undefined' ? unit : '%';
-						minWidth = _DMinWidth + unit;
+						json.button.minWidth = _DMinWidth + unit;
 					},
 
 					setButtonDFontSize: function(_DFontSize, unit) {
 						unit = typeof unit !== 'undefined' ? unit : 'rem';
-						fontSize = _DFontSize + unit;
+						json.button.fontSize = _DFontSize + unit;
 					},
 
 					renderFocusImage: function() {
@@ -754,11 +787,32 @@ window.jumboManager = (function($){
 		width = width || ui.$responsiveSlider.data("uiSlider") && ui.$responsiveSlider.slider("value");
 		var $range = ui.$responsiveSlider.children(".ui-slider-range"),
 		getCurrentResponsiveClass = function(width){
-			if(width < Jumbos.getCurrentJumbo().getMobileWidth()) {
+			if(width < Jumbos.getMobileWidth()) {
+				xmBootstrapAlert.alert({
+					mode: "danger",
+					content: "Mobile View",
+					showClose: false,
+					fade: true,
+					fadeTime: 500
+				});
 				return MOBILE_RANGE_BACKGROUND;
-			} else if(width < Jumbos.getCurrentJumbo().getTabletWidth()) {
+			} else if(width < Jumbos.getTabletWidth()) {
+				xmBootstrapAlert.alert({
+					mode: "warning",
+					content: "Tablet View",
+					showClose: false,
+					fade: true,
+					fadeTime: 500
+				});
 				return TABLET_RANGE_BACKGROUND;
 			} else {
+				xmBootstrapAlert.alert({
+					mode: "success",
+					content: "Desktop View",
+					showClose: false,
+					fade: true,
+					fadeTime: 500
+				});
 				return DESKTOP_RANGE_BACKGROUND;
 			}
 		};
@@ -814,36 +868,75 @@ window.jumboManager = (function($){
 				});
 			});
 			ui.$saveCanvas.on("click", function(){
-				//TODO saveCanvas
-				debugger;
-
-				xmBootstrapAlert.alert({
-					content: "Canvas saved",
-					fade: true,
-					showClose: false
+				$.when(Jumbos.save()).done(function(message){
+					xmBootstrapAlert.alert({
+						content: message,
+						fade: true,
+						showClose: false
+					});
+				}).fail(function(message){
+					xmBootstrapAlert.alert({
+						mode: "danger",
+						content: message,
+						fade: true,
+						showClose: false
+					});
 				});
+			});
+			ui.$savePreviewCanvas.on("click", function(){
+				ui.$saveCanvas.trigger("click");
+				window.open(settings.previewUrl, '_blank');
 			});
 		})({
 
 		});
 
 		(function initGeneralControls(options){
-			ui.$bgMaxHeight.slider({
+			// desktop max height
+			var updateDesktopMaxHeight = function(event, _ui) {
+				Jumbos.setDesktopMaxHeight(_ui.value);
+				Jumbos.getCurrentJumbo().renderFocusImage();
+			};
+			ui.$desktopMaxHeight.slider({
 				min: 50,
 				max: 700,
 				step: 50,
-				value: options.initBgMaxHeight,
-				slide: function(event, _ui) {
-					var bgMaxHeight = _ui.value;
-					settings.maxBgHeight = bgMaxHeight;
-					Jumbos.getCurrentJumbo().renderFocusImage();
-				}
+				value: options.initDesktopMaxHeight,
+				slide: updateDesktopMaxHeight,
+				change: updateDesktopMaxHeight
 			}).slider("pips", {suffix: "px"}).slider("float", {suffix: "px"});
 			
-			//TODO tablet max height
-			//TODO mobile max height
+			// tablet max height
+			var updateTabletMaxHeight = function(event, _ui) {
+				Jumbos.setTabletMaxHeight(_ui.value);
+				Jumbos.getCurrentJumbo().renderFocusImage();
+			};
+			ui.$tabletMaxHeight.slider({
+				min: 50,
+				max: 700,
+				step: 50,
+				value: options.initTabletMaxHeight,
+				slide: updateTabletMaxHeight,
+				change: updateTabletMaxHeight
+			}).slider("pips", {suffix: "px"}).slider("float", {suffix: "px"});
+
+			// mobile max height
+			var updateMobileMaxHeight = function(event, _ui) {
+				Jumbos.setMobileMaxHeight(_ui.value);
+				Jumbos.getCurrentJumbo().renderFocusImage();
+			};
+			ui.$mobileMaxHeight.slider({
+				min: 50,
+				max: 700,
+				step: 50,
+				value: options.initMobileMaxHeight,
+				slide: updateMobileMaxHeight,
+				change: updateMobileMaxHeight
+			}).slider("pips", {suffix: "px"}).slider("float", {suffix: "px"});
 		})({
-			initBgMaxHeight: options.initBgMaxHeight
+			initDesktopMaxHeight: options.initDesktopMaxHeight,
+			initTabletMaxHeight: options.initTabletMaxHeight,
+			initMobileMaxHeight: options.initMobileMaxHeight
 		});
 
 		(function initSlideControls(options) {
@@ -911,8 +1004,8 @@ window.jumboManager = (function($){
 			},
 
 			updateJumboWidthsBySlider = function(values) {
-				Jumbos.getCurrentJumbo().setMobileWidth(values[MOBILE_VALUE_INDEX]);
-				Jumbos.getCurrentJumbo().setTabletWidth(values[TABLET_VALUE_INDEX]);
+				Jumbos.setMobileWidth(values[MOBILE_VALUE_INDEX]);
+				Jumbos.setTabletWidth(values[TABLET_VALUE_INDEX]);
 			},
 
 			setCustomRange = function(slider) {
@@ -994,21 +1087,6 @@ window.jumboManager = (function($){
 			// Responsive Width responding to window resize
 			$(window).resize(function(){
 				updateCustomRange(ui.$responsiveWidths);
-			});
-
-			// Button that applies responsive width settings to all slides
-			ui.$applyAllWidth.on("click", function(event){
-
-				Jumbos.applyAllWidths([
-					Jumbos.getCurrentJumbo().getMobileWidth(),
-					Jumbos.getCurrentJumbo().getTabletWidth()
-				]);
-
-				xmBootstrapAlert.alert({
-					fade: true,
-					content: "Settings applied to all slides",
-					showClose: false
-				})
 			});
 
 			ui.$desktopImageUpload.on("change", function(event){
@@ -1273,6 +1351,7 @@ window.jumboManager = (function($){
 					$(this).prop("src", settings.imageNotFoundUrl);
 				})
 			)
+		;
 	};
 
 	// Public scope
@@ -1296,7 +1375,9 @@ window.jumboManager = (function($){
 					initShowGrid: true,
 					initGridHGap: 50,
 					initGridVGap: 50,
-					initBgMaxHeight: settings.maxBgHeight,
+					initDesktopMaxHeight: 400,
+					initTabletMaxHeight: 700,
+					initMobileMaxHeight: 700,
 					initBgColor: "red",
 					initMobileWidth: 600,
 					initTabletWidth: 900
@@ -1306,12 +1387,21 @@ window.jumboManager = (function($){
 					initReponsiveSlider();
 					initPreviewPagination();
 				}).fail(function(msg){
-					alert("Failed because: " + msg);
+					// alert("Failed because: " + msg);
+					xmBootstrapAlert.alert({
+						mode: "danger",
+						content: msg
+					})
 				});
 
 			} else {
 				//log ui initialization error
-				alert("Ui Error");
+				// alert("Ui Error");
+				xmBootstrapAlert.alert({
+					mode: "danger",
+					content: "UI Error",
+					showClose: false
+				})
 			}
 		}
 	}
