@@ -749,11 +749,10 @@ window.jumboManager = (function($){
 		});
 	},
 
-	initReponsiveSlider = function() {
-		$(".letterbox").width(0);
-		ui.$preview.width("100%");
-
-		var canvasWidth = ui.$responsiveSlider.parent()[0].clientWidth,
+	updateSliderRangeColor = function(width) {
+		// Get value of current responsive slider, if it has been initialized
+		width = width || ui.$responsiveSlider.data("uiSlider") && ui.$responsiveSlider.slider("value");
+		var $range = ui.$responsiveSlider.children(".ui-slider-range"),
 		getCurrentResponsiveClass = function(width){
 			if(width < Jumbos.getCurrentJumbo().getMobileWidth()) {
 				return MOBILE_RANGE_BACKGROUND;
@@ -762,23 +761,34 @@ window.jumboManager = (function($){
 			} else {
 				return DESKTOP_RANGE_BACKGROUND;
 			}
-		},
-		updateSliderRangeColor = function($rangeElement, width) {
-			$rangeElement
-				.removeClass(MOBILE_RANGE_BACKGROUND)
-				.removeClass(TABLET_RANGE_BACKGROUND)
-				.removeClass(DESKTOP_RANGE_BACKGROUND)
-				.addClass(getCurrentResponsiveClass(width));
 		};
+
+		if(!$range) {
+			return;
+		}
+		$range
+			.removeClass(MOBILE_RANGE_BACKGROUND)
+			.removeClass(TABLET_RANGE_BACKGROUND)
+			.removeClass(DESKTOP_RANGE_BACKGROUND)
+			.addClass(getCurrentResponsiveClass(width));
+	},
+
+	initReponsiveSlider = function() {
+		$(".letterbox").width(0);
+		ui.$preview.width("100%");
+
+		var canvasWidth = ui.$responsiveSlider.parent()[0].clientWidth;
+
+		updateSliderRangeColor(canvasWidth);
 
 		ui.$responsiveSlider.slider({
 			range: "min",
 			min: 300,
 			max: canvasWidth,
-			step: 1,	// Setting this to 2 would resolve the jittering effect, which is caused by rounding
+			step: 2,	// Setting this from 1 to 2 would resolve the jittering effect, which is caused by rounding
 			value: canvasWidth,
 			create: function(event, _ui) {
-				updateSliderRangeColor($(event.target).children(".ui-slider-range"), _ui.value);
+				updateSliderRangeColor(_ui.value);
 			},
 			slide: function(event, _ui) {
 				ui.$preview.width(_ui.value);
@@ -786,7 +796,7 @@ window.jumboManager = (function($){
 				Jumbos.getCurrentJumbo().renderFocusImage();
 
 				// Set color
-				updateSliderRangeColor($(_ui.handle).siblings(".ui-slider-range"), _ui.value);
+				updateSliderRangeColor(_ui.value);
 			}
 		}).slider("pips", {suffix: "px"}).slider("float", {suffix: "px"});
 	},
@@ -969,10 +979,12 @@ window.jumboManager = (function($){
 							Jumbos.getCurrentJumbo().renderFocusImage();
 						}.bind(this), 10);
 						updateJumboWidthsBySlider(ui.values);
+						updateSliderRangeColor();
 					},
 					change: function(event, ui) {
 						updateCustomRange(this);
 						updateJumboWidthsBySlider(ui.values);
+						updateSliderRangeColor();
 					}
 				})
 				.slider("pips", {rest: "label"});
