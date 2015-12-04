@@ -15,9 +15,9 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 		ajaxFetchJumbos: function() {
 			var dfd = $.Deferred();
 			var jumbos = {
-				desktopMaxHeight: 400,
-				tabletMaxHeight: 700,
-				mobileMaxHeight: 700,
+				desktopMaxHeight: 440,
+				tabletMaxHeight: 800,
+				mobileMaxHeight: 800,
 				tabletWidth: 900,
 				mobileWidth: 600,
 				jumbos: [

@@ -9,7 +9,7 @@
 	settings = {},
 	defaults = {
 		jumbotronClass: "jumbotron",
-		imageContainerClass: "image-container",
+		slideContainerClass: "slide-container",
 		imageClass: "image",
 		imageNotFoundUrl: "img/image_not_found.jpg",
 		slickDefaults: {
@@ -27,52 +27,84 @@
 	TYPE_MOBILE = "mobile",
 
 	getImage = function(imageUrl) {
-		return $("<img></img>")
+		var dfd = $.Deferred(),
+		image = $("<img></img>")
 			.addClass(settings.imageClass)
 			.prop("src", imageUrl)	//temp
 			.attr("data-src", imageUrl)
 			.css({
 				maxHeight: "100%",
 				margin: "0 auto",
-				maxWidth: "100%"
+				maxWidth: "100%",
+				zIndex: -1
+			})
+			.load(function(){
+				dfd.resolve(image);
 			})
 			.error(function(){
 				// Replace image source if 404'd
 				$(this).prop("src", settings.imageNotFoundUrl);
 			})
 		;
+		return dfd.promise();
 	},
 
 	getImageContainer = function(image, type) {
-		var url;
-		// var height;
+		var imageUrl, height;
 
 		switch(type) {
 			case TYPE_DESKTOP:
-				url = image.desktopUrl;
-				// height = json.desktopMaxHeight;
+				imageUrl = image.desktopUrl;
+				height = json.desktopMaxHeight;
 				break;
 
 			case TYPE_TABLET:
-				url = image.tabletUrl || image.desktopUrl;
-				// height = json.tabletMaxHeight;
+				imageUrl = image.tabletUrl || image.desktopUrl;
+				height = json.tabletMaxHeight;
 				break;
 
 			case TYPE_MOBILE:
-				url = image.mobileUrl || image.tabletUrl || image.desktopUrl;
-				// height = json.mobileMaxHeight;
+				imageUrl = image.mobileUrl || image.tabletUrl || image.desktopUrl;
+				height = json.mobileMaxHeight;
 				break;
 		}
 
-		return $("<div></div>")
-			.addClass(settings.imageContainerClass)
-			.append(getImage(url))
+		var imageContainer = $("<div></div>")
+			.addClass(settings.slideContainerClass)
 			.css({
-				// maxHeight: height,
+				position: "relative",
+				maxHeight: height,
 				height: "auto",
 				backgroundColor: image.bgColor
 			})
 		;
+
+		// Once image is loaded, append image and overlay
+		$.when(getImage(imageUrl)).done(function(imageElement){
+			imageContainer.append(imageElement);
+
+			var width = imageElement.width(),
+			height = imageElement.height(),
+			overlay = $("<a></a>")
+				.prop("href", "#")
+				.append($("<div></div>")
+					.css({
+						position: "absolute",
+						top: 0,
+						bottom: 0,
+						left: 0,
+						right: 0,
+						margin: "0 auto",
+						width: width,
+						height: height
+					})
+				)
+			;
+
+			imageContainer.append(overlay);
+		});
+
+		return imageContainer;
 	},
 
 	getImageContainers = function(jumbos, type) {
@@ -117,7 +149,7 @@
 			.slick($.extend({}, settings.slickDefaults, slickOptions))
 			.on("afterChange", function(event, slick, i){
 
-			});
+			})
 		;
 
 	},
@@ -136,7 +168,7 @@
 			mobileJumbotron.show();
 		}
 
-		//Overlay
+		//TODO: Overlay
 	},
 
 	onResize = function(event) {
