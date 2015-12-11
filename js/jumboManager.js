@@ -900,7 +900,7 @@ window.jumboManager = (function($){
 			ui.$desktopMaxHeight.slider({
 				min: 50,
 				max: 700,
-				step: 50,
+				step: 10,
 				value: options.initDesktopMaxHeight,
 				slide: updateDesktopMaxHeight,
 				change: updateDesktopMaxHeight
@@ -914,7 +914,7 @@ window.jumboManager = (function($){
 			ui.$tabletMaxHeight.slider({
 				min: 50,
 				max: 700,
-				step: 50,
+				step: 10,
 				value: options.initTabletMaxHeight,
 				slide: updateTabletMaxHeight,
 				change: updateTabletMaxHeight
@@ -928,7 +928,7 @@ window.jumboManager = (function($){
 			ui.$mobileMaxHeight.slider({
 				min: 50,
 				max: 700,
-				step: 50,
+				step: 10,
 				value: options.initMobileMaxHeight,
 				slide: updateMobileMaxHeight,
 				change: updateMobileMaxHeight

@@ -10,8 +10,13 @@
 	defaults = {
 		jumbotronClass: "jumbotron",
 		slideContainerClass: "slide-container",
+		buttonContainerClass: "button-container",
+		buttonClass: "button",
+		primaryButtonClass: "button-primary",
 		imageClass: "image",
+		overlayClass: "overlay",
 		imageNotFoundUrl: "img/image_not_found.jpg",
+		buttonVPadding: "0.5rem",
 		slickDefaults: {
 			autoplay: false,
 			autoplaySpeed: 30000
@@ -49,27 +54,105 @@
 		return dfd.promise();
 	},
 
-	getImageContainer = function(image, type) {
-		var imageUrl, height;
+	getButton = function() {
+		var dfd = $.Deferred();
 
+		dfd.resolve();
+		return dfd.promise();
+	},
+
+	getButtonContainer = function(buttonJson) {
+		var dfd = $.Deferred(),
+		buttonContainer = $("<div></div>")
+			.addClass(settings.buttonContainerClass)
+			.css({
+				display: "inline-block",
+				position: "absolute",
+				left: buttonJson.hAlign,
+				top: buttonJson.vAlign,
+				transform: "translate(-" + buttonJson.hAlign + ", -" + buttonJson.vAlign + ")",
+				minWidth: buttonJson.minWidth
+			});
+		;
+
+		$.each(buttonJson.buttons, function(idx, button){
+			if(button.visible){
+				var buttonElement = $("<a></a>")
+					.addClass(settings.buttonClass)
+					.prop("href", button.url)
+					.html(button.text)
+					.css({
+						"background-color": button.bgColor,
+						"border": "1px solid " + button.color,
+						"color": button.color,
+						"margin-top": buttonJson.vGap,
+						"font-size": buttonJson.fontSize,
+						"padding": settings.buttonVPadding + " 0",
+						"text-align": "center",
+						"display": "block"
+					})
+					.hover(function(){
+						$(this).css({
+							"opacity": 0.5
+						});
+					}, function(){
+						$(this).css({
+							"opacity": 1
+						});
+					})
+				;
+
+				if(idx === 0) {
+					buttonElement
+						.addClass(settings.primaryButtonClass)
+						.css({
+							"margin-top": 0
+						})
+					;
+				}
+
+				buttonContainer.append(buttonElement);
+			}
+		});
+
+		return buttonContainer;
+
+		dfd.resolve();
+		return dfd.promise();
+	},
+
+	getSlideContainer = function(jumbo, type) {
+		var image = jumbo.image;
+		var buttonJson;
+		var imageUrl, height;
 		switch(type) {
 			case TYPE_DESKTOP:
 				imageUrl = image.desktopUrl;
 				height = json.desktopMaxHeight;
+				buttonJson = jumbo.button;		// Duplicated in case we are moving button settings to responsive
 				break;
 
 			case TYPE_TABLET:
 				imageUrl = image.tabletUrl || image.desktopUrl;
 				height = json.tabletMaxHeight;
+				buttonJson = jumbo.button;		// Duplicated in case we are moving button settings to responsive
+				buttonJson.hAlign = "50%";
+				buttonJson.vAlign = "92%";
+				buttonJson.minWidth = "50%";
 				break;
 
 			case TYPE_MOBILE:
 				imageUrl = image.mobileUrl || image.tabletUrl || image.desktopUrl;
 				height = json.mobileMaxHeight;
+				buttonJson = jumbo.button;		// Duplicated in case we are moving button settings to responsive
+				buttonJson.hAlign = "50%";
+				buttonJson.vAlign = "90%";
+				buttonJson.minWidth = "50%";
+				buttonJson.buttons[1].visible = false;
 				break;
 		}
 
-		var imageContainer = $("<div></div>")
+		var slideContainer = $("<div></div>")
 			.addClass(settings.slideContainerClass)
 			.css({
 				position: "relative",
@@ -80,14 +163,14 @@
 		;
 
 		// Once image is loaded, append image and overlay
-		$.when(getImage(imageUrl)).done(function(imageElement){
-			imageContainer.append(imageElement);
-
+		$.when(getImage(imageUrl), getButtonContainer(buttonJson)).done(function(imageElement, buttonContainerElement){
+			slideContainer.append(imageElement);
 			var width = imageElement.width(),
 			height = imageElement.height(),
 			overlay = $("<a></a>")
-				.prop("href", "#")
+				.prop("href", "#")	// TODO overlay link
 				.append($("<div></div>")
+					.addClass(settings.overlayClass)
 					.css({
 						position: "absolute",
 						top: 0,
@@ -98,21 +181,22 @@
 						width: width,
 						height: height
 					})
+					.append(buttonContainerElement)
 				)
 			;
 
-			imageContainer.append(overlay);
+			slideContainer.append(overlay);
 		});
 
-		return imageContainer;
+		return slideContainer;
 	},
 
-	getImageContainers = function(jumbos, type) {
-		var imageContainers = [];
+	getSlideContainers = function(jumbos, type) {
+		var slideContainers = [];
 		$.each(jumbos, function(idx, jumbo){
-			imageContainers.push(getImageContainer(jumbo.image, type));
+			slideContainers.push(getSlideContainer(jumbo, type));
 		});
-		return imageContainers;
+		return slideContainers;
 	},
 
 	getJumbotronContainer = function(json, type) {
@@ -145,35 +229,79 @@
 		return $("<div></div>")
 			.addClass(settings.jumbotronClass)
 			.addClass(type + "-" + settings.jumbotronClass)
-			.append(getImageContainers(json.jumbos, type))
+			.append(getSlideContainers(json.jumbos, type))
 			.slick($.extend({}, settings.slickDefaults, slickOptions))
 			.on("afterChange", function(event, slick, i){
-
+				//TODO lazyload
 			})
 		;
 
 	},
 
-	renderJumbotrons = function(width) {
+	renderJumbotrons = function(width, height) {
 
 		desktopJumbotron.hide();
 		tabletJumbotron.hide();
 		mobileJumbotron.hide();
+		// var currentOverlay, currentImage;
 
 		if(width > json.tabletWidth) {
 			desktopJumbotron.show();
+			// currentOverlay = desktopJumbotron.find(".slick-current ." + settings.overlayClass);
+			// currentImage = desktopJumbotron.find(".slick-current ." + settings.imageClass);
 		} else if(width > json.mobileWidth) {
 			tabletJumbotron.show();
+			// currentOverlay = tabletJumbotron.find(".slick-current ." + settings.overlayClass);
+			// currentImage = tabletJumbotron.find(".slick-current ." + settings.imageClass);
 		} else {
 			mobileJumbotron.show();
+			// currentOverlay = mobileJumbotron.find(".slick-current ." + settings.overlayClass);
+			// currentImage = mobileJumbotron.find(".slick-current ." + settings.imageClass);
 		}
 
-		//TODO: Overlay
+		// currentOverlay
+		// 	.width(currentImage.width())
+		// 	.height(currentImage.height())
+		// ;
+
+		setTimeout(function(){
+			$.each($("."+settings.overlayClass), function(idx, el) {
+				var imageElement = $(this).closest("."+settings.slideContainerClass).children("."+settings.imageClass);
+				$(this).width(imageElement.width());
+				$(this).height(imageElement.height());
+			});
+		}, 50);	// Setting timeout here to accomodate the throttle in slick slider's resize
 	},
 
 	onResize = function(event) {
-		renderJumbotrons(this.width());
+		renderJumbotrons(this.width(), this.height());
 	};
+
+	window.throttle = window.throttle || function(fn, threshhold, scope) {
+		threshhold || (threshhold = 250);
+
+		var last,
+			deferTimer;
+
+		return function () {
+			var context = scope || this;
+
+			var now = +new Date,
+				args = arguments;
+
+			if (last && now < last + threshhold) {
+				// hold on to it
+				clearTimeout(deferTimer);
+				deferTimer = setTimeout(function () {
+					last = now;
+					fn.apply(context, args);
+				}, threshhold);
+			} else {
+				last = now;
+				fn.apply(context, args);
+			}
+		};
+	}
 
 	$.fn.generateJumbo = function(_json, options) {
 
@@ -193,6 +321,7 @@
 		;
 
 		onResize.apply(this);
+		// $(window).resize(throttle(onResize.bind(this),60));
 		$(window).resize(onResize.bind(this));
 		// $("head").append($("<style></style>")
 		// 	.text("\

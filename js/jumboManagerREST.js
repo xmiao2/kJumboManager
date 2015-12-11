@@ -38,7 +38,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 								{
 									visible: true,
 									text: "Silver",
-									url: "#",
+									url: "/",
 									color: "black",
 									bgColor: "rgba(127, 140, 234, 0.19)"
 								},
