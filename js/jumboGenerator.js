@@ -16,10 +16,13 @@
 		imageClass: "image",
 		overlayClass: "overlay",
 		imageNotFoundUrl: "img/image_not_found.jpg",
+		blankImageUrl: "img/blank.gif",
 		buttonVPadding: "0.5rem",
 		slickDefaults: {
 			autoplay: false,
-			autoplaySpeed: 30000
+			autoplaySpeed: 30000,
+			arrows: true,
+			dots: true
 		}
 	},
 
@@ -30,13 +33,14 @@
 	TYPE_DESKTOP = "desktop",
 	TYPE_TABLET = "tablet",
 	TYPE_MOBILE = "mobile",
+	DATA_SRC = "data-src",
 
 	getImage = function(imageUrl) {
 		var dfd = $.Deferred(),
 		image = $("<img></img>")
 			.addClass(settings.imageClass)
-			.prop("src", imageUrl)	//temp
-			.attr("data-src", imageUrl)
+			.prop("src", settings.blankImageUrl)	// For lazy loading
+			.attr(DATA_SRC, imageUrl)
 			.css({
 				maxHeight: "100%",
 				margin: "0 auto",
@@ -122,6 +126,7 @@
 	},
 
 	getSlideContainer = function(jumbo, type) {
+		var dfd = $.Deferred();
 		var image = jumbo.image;
 		var buttonJson;
 		var imageUrl, height;
@@ -186,17 +191,27 @@
 			;
 
 			slideContainer.append(overlay);
+			dfd.resolve(slideContainer);
 		});
 
-		return slideContainer;
+		return dfd.promise();
 	},
 
 	getSlideContainers = function(jumbos, type) {
+		var dfd = $.Deferred();
 		var slideContainers = [];
+		var slideContainersPromises = [];
 		$.each(jumbos, function(idx, jumbo){
-			slideContainers.push(getSlideContainer(jumbo, type));
+			slideContainersPromises.push(getSlideContainer(jumbo, type));
 		});
-		return slideContainers;
+		$.when.apply($, slideContainersPromises).done(function(){
+			$.each(arguments, function(idx, container) {
+				slideContainers.push(container);
+			});
+			dfd.resolve(slideContainers);
+		});
+		// return slideContainers;
+		return dfd.promise();
 	},
 
 	getJumbotronContainer = function(json, type) {
@@ -226,19 +241,46 @@
 				break;
 		}
 
-		return $("<div></div>")
+		var lazyloadImage = function(event, slick, i){
+			//TODO lazyload
+			// debugger;
+			i = typeof i !== "undefined" ? i : 0;
+			var image = $(slick.$slides[i]).children("."+settings.imageClass),
+			src = image.attr(DATA_SRC);
+			if(!!src) {
+				image.prop("src", src);
+				image.removeAttr(DATA_SRC);
+				renderJumbotrons();
+			}
+		};
+
+		var jumbotronContainer = $("<div></div>")
 			.addClass(settings.jumbotronClass)
 			.addClass(type + "-" + settings.jumbotronClass)
-			.append(getSlideContainers(json.jumbos, type))
-			.slick($.extend({}, settings.slickDefaults, slickOptions))
-			.on("afterChange", function(event, slick, i){
-				//TODO lazyload
-			})
 		;
+
+		$.when(getSlideContainers(json.jumbos, type)).done(function(slideContainers){
+			jumbotronContainer
+				.append(slideContainers)
+				.on("init", function(event, slick){
+					lazyloadImage(event, slick, 0);
+					// TODO: set theme color
+				})
+				.slick($.extend({}, settings.slickDefaults, slickOptions))
+				.on("afterChange", function(event, slick, i){
+					lazyloadImage(event, slick, i);
+					// TODO: set theme color
+				})
+		});
+
+		return jumbotronContainer;
 
 	},
 
 	renderJumbotrons = function(width, height) {
+
+		width = typeof width !== "undefined" ? width : $(window).width();
+		height = typeof height !== "undefined" ? height: $(window).height();
 
 		desktopJumbotron.hide();
 		tabletJumbotron.hide();
@@ -270,11 +312,11 @@
 				$(this).width(imageElement.width());
 				$(this).height(imageElement.height());
 			});
-		}, 50);	// Setting timeout here to accomodate the throttle in slick slider's resize
+		}, 100);	// Setting timeout here to accomodate the throttle in slick slider's resize
 	},
 
 	onResize = function(event) {
-		renderJumbotrons(this.width(), this.height());
+		renderJumbotrons();
 	};
 
 	window.throttle = window.throttle || function(fn, threshhold, scope) {

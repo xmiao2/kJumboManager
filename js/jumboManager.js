@@ -554,11 +554,11 @@ window.jumboManager = (function($){
 					},
 
 					updateButtonBgColor = function(idx, color) {
-						buttons[idx].bgColor = color.toRgbString();
+						json.button.buttons[idx].bgColor = color.toRgbString();
 					},
 
 					updateButtonColor = function(idx, color) {
-						buttons[idx].color = color.toRgbString();
+						json.button.buttons[idx].color = color.toRgbString();
 					};
 
 					_ui.$buttonPrimaryColor
@@ -567,6 +567,9 @@ window.jumboManager = (function($){
 							move: function(color) {
 								updateButtonColor(PRIMARY_BUTTON_INDEX, color);
 								_renderButtons();
+							},
+							change: function(color) {
+								debugger;
 							}
 						}))
 					;

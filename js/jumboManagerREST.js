@@ -86,14 +86,16 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 					{
 						image: {
 							desktopUrl: "img/Clearance-D.jpg",
+							tabletUrl: "img/Clearance-T.jpg",
+							mobileUrl: "img/Clearance-T.jpg",
 							bgColor: "rgba(0,0,0,0.8)"
 						},
 						button: {
-							hAlign: "75%",
-							vAlign: "70%", 
+							hAlign: "50%",
+							vAlign: "89%", 
 							vGap: "1rem",
 							fontSize: "1rem",
-							minWidth: "15%",
+							minWidth: "50%",
 							buttons: [
 								{
 									visible: true,
@@ -115,11 +117,13 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 					{
 						image: {
 							desktopUrl: "img/Holiday-Nov-10-D.jpg",
+							tabletUrl: "img/Holiday-Nov-10-T.jpg",
+							mobileUrl: "img/Holiday-Nov-10-T.jpg",
 							bgColor: "#791516"
 						},
 						button: {
-							hAlign: "75%",
-							vAlign: "70%", 
+							hAlign: "21%",
+							vAlign: "75%", 
 							vGap: "1rem",
 							fontSize: "1rem",
 							minWidth: "15%",
@@ -128,14 +132,14 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 									visible: true,
 									text: "primary",
 									url: "#",
-									color: "#ffffff",
+									color: "#d43085",
 									bgColor: "rgba(0,0,0,0)"
 								},
 								{
 									visible: true,
 									text: "secondary",
 									url: "#",
-									color: "#ffffff",
+									color: "#d43085",
 									bgColor: "rgba(0,0,0,0)"
 								}
 							]
@@ -144,11 +148,13 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 					{
 						image: {
 							desktopUrl: "img/LG-Nov-10-D.jpg",
+							tabletUrl: "img/LG-Nov-10-T.jpg",
+							mobileUrl: "img/LG-Nov-10-T.jpg",
 							bgColor: "lightblue"
 						},
 						button: {
 							hAlign: "75%",
-							vAlign: "70%", 
+							vAlign: "77%", 
 							vGap: "1rem",
 							fontSize: "1rem",
 							minWidth: "15%",
@@ -157,14 +163,14 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 									visible: true,
 									text: "primary",
 									url: "#",
-									color: "#ffffff",
+									color: "#fff",
 									bgColor: "rgba(0,0,0,0)"
 								},
 								{
 									visible: true,
 									text: "secondary",
 									url: "#",
-									color: "#ffffff",
+									color: "#fff",
 									bgColor: "rgba(0,0,0,0)"
 								}
 							]
@@ -173,13 +179,15 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 					{
 						image: {
 							desktopUrl: "img/Pandora-Nov-10-D.jpg",
+							tabletUrl: "img/Pandora-Nov-10-T.jpg",
+							mobileUrl: "img/Pandora-Nov-10-T.jpg",
 							bgColor: "lightblue"
 						},
 						button: {
-							hAlign: "75%",
-							vAlign: "70%", 
-							vGap: "1rem",
-							fontSize: "1rem",
+							hAlign: "76%",
+							vAlign: "62%", 
+							vGap: "3rem",
+							fontSize: "2rem",
 							minWidth: "15%",
 							buttons: [
 								{
@@ -202,6 +210,8 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 					{
 						image: {
 							desktopUrl: "img/Pre-Black-Nov-19-D.jpg",
+							tabletUrl: "img/Pre-Black-Nov-19-T.jpg",
+							mobileUrl: "img/Pre-Black-Nov-19-T.jpg",
 							bgColor: "#791516"
 						},
 						button: {
@@ -212,384 +222,14 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							minWidth: "15%",
 							buttons: [
 								{
-									visible: true,
+									visible: false,
 									text: "primary",
 									url: "#",
 									color: "#ffffff",
 									bgColor: "rgba(0,0,0,0)"
 								},
 								{
-									visible: true,
-									text: "secondary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								}
-							]
-						}
-					},
-					{
-						image: {
-							desktopUrl: "img/invalidurl.jpg",
-							bgColor: "lightblue"
-						},
-						button: {
-							hAlign: "75%",
-							vAlign: "70%", 
-							vGap: "1rem",
-							fontSize: "1rem",
-							minWidth: "15%",
-							buttons: [
-								{
-									visible: true,
-									text: "primary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								},
-								{
-									visible: true,
-									text: "secondary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								}
-							]
-						}
-					},
-					{
-						image: {
-							desktopUrl: "img/9.jpg",
-							bgColor: "lightblue"
-						},
-						button: {
-							hAlign: "75%",
-							vAlign: "70%", 
-							vGap: "1rem",
-							fontSize: "1rem",
-							minWidth: "15%",
-							buttons: [
-								{
-									visible: true,
-									text: "primary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								},
-								{
-									visible: true,
-									text: "secondary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								}
-							]
-						}
-					},
-					{
-						image: {
-							desktopUrl: "img/10.jpg",
-							bgColor: "lightblue"
-						},
-						button: {
-							hAlign: "left",
-							vAlign: "middle", 
-							buttons: [
-								{
-									visible: true,
-									text: "primary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								},
-								{
-									visible: true,
-									text: "secondary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								}
-							]
-						}
-					},
-					{
-						image: {
-							desktopUrl: "img/7.jpg",
-							bgColor: "lightblue"
-						},
-						button: {
-							hAlign: "left",
-							vAlign: "middle", 
-							buttons: [
-								{
-									visible: true,
-									text: "primary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								},
-								{
-									visible: true,
-									text: "secondary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								}
-							]
-						}
-					},
-					{
-						image: {
-							desktopUrl: "img/7.jpg",
-							bgColor: "lightblue"
-						},
-						button: {
-							hAlign: "left",
-							vAlign: "middle", 
-							buttons: [
-								{
-									visible: true,
-									text: "primary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								},
-								{
-									visible: true,
-									text: "secondary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								}
-							]
-						}
-					},
-					{
-						image: {
-							desktopUrl: "img/8.jpg",
-							bgColor: "lightblue"
-						},
-						button: {
-							hAlign: "left",
-							vAlign: "middle", 
-							buttons: [
-								{
-									visible: true,
-									text: "primary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								},
-								{
-									visible: true,
-									text: "secondary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								}
-							]
-						}
-					},
-					{
-						image: {
-							desktopUrl: "img/9.jpg",
-							bgColor: "lightblue"
-						},
-						button: {
-							hAlign: "left",
-							vAlign: "middle", 
-							buttons: [
-								{
-									visible: true,
-									text: "primary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								},
-								{
-									visible: true,
-									text: "secondary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								}
-							]
-						}
-					},
-					{
-						image: {
-							desktopUrl: "img/10.jpg",
-							bgColor: "lightblue"
-						},
-						button: {
-							hAlign: "left",
-							vAlign: "middle", 
-							buttons: [
-								{
-									visible: true,
-									text: "primary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								},
-								{
-									visible: true,
-									text: "secondary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								}
-							]
-						}
-					},
-					{
-						image: {
-							desktopUrl: "img/7.jpg",
-							bgColor: "lightblue"
-						},
-						button: {
-							hAlign: "left",
-							vAlign: "middle", 
-							buttons: [
-								{
-									visible: true,
-									text: "primary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								},
-								{
-									visible: true,
-									text: "secondary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								}
-							]
-						}
-					},
-					{
-						image: {
-							desktopUrl: "img/7.jpg",
-							bgColor: "lightblue"
-						},
-						button: {
-							hAlign: "left",
-							vAlign: "middle", 
-							buttons: [
-								{
-									visible: true,
-									text: "primary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								},
-								{
-									visible: true,
-									text: "secondary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								}
-							]
-						}
-					},
-					{
-						image: {
-							desktopUrl: "img/8.jpg",
-							bgColor: "lightblue"
-						},
-						button: {
-							hAlign: "left",
-							vAlign: "middle", 
-							buttons: [
-								{
-									visible: true,
-									text: "primary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								},
-								{
-									visible: true,
-									text: "secondary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								}
-							]
-						}
-					},
-					{
-						image: {
-							desktopUrl: "img/9.jpg",
-							bgColor: "lightblue"
-						},
-						button: {
-							hAlign: "left",
-							vAlign: "middle", 
-							buttons: [
-								{
-									visible: true,
-									text: "primary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								},
-								{
-									visible: true,
-									text: "secondary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								}
-							]
-						}
-					},
-					{
-						image: {
-							desktopUrl: "img/10.jpg",
-							bgColor: "lightblue"
-						},
-						button: {
-							hAlign: "left",
-							vAlign: "middle", 
-							buttons: [
-								{
-									visible: true,
-									text: "primary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								},
-								{
-									visible: true,
-									text: "secondary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								}
-							]
-						}
-					},
-					{
-						image: {
-							desktopUrl: "img/7.jpg",
-							bgColor: "lightblue"
-						},
-						button: {
-							hAlign: "left",
-							vAlign: "middle", 
-							buttons: [
-								{
-									visible: true,
-									text: "primary",
-									url: "#",
-									color: "#ffffff",
-									bgColor: "rgba(0,0,0,0)"
-								},
-								{
-									visible: true,
+									visible: false,
 									text: "secondary",
 									url: "#",
 									color: "#ffffff",

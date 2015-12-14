@@ -4,6 +4,41 @@
 	<!-- Slick Slider -->
 	<link rel="stylesheet" href="lib/slick/slick.css">
 	<link rel="stylesheet" href="lib/slick/slick-theme.css">
+	<style>
+		body {
+			margin: 0;
+		}
+		.slick-prev, .slick-next {
+			position: absolute;
+			z-index: 1000;
+		}
+		.slick-prev:before, .slick-next:before {
+			font-family: "FontAwesome";
+			color: black;
+		}
+		.slick-prev:before {
+			content: "<";
+		}
+		.slick-next:before {
+			content: ">";
+		}
+		.slick-prev {
+			left: 3rem;
+		}
+		.slick-prev {
+			left: 3rem;
+		}
+		.slick-next {
+			right: 3rem;
+		}
+		.slick-dots {
+			bottom: 0;
+		}
+		.slick-dots li button:before {
+			content: "*";
+			font-size: 3rem;
+		}
+	</style>
 </head>
 <body>
 	<div id="preview"></div>
