@@ -18,6 +18,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 				desktopMaxHeight: 440,
 				tabletMaxHeight: 800,
 				mobileMaxHeight: 800,
+				autoplaySpeed: 5000,
 				tabletWidth: 900,
 				mobileWidth: 600,
 				jumbos: [
@@ -26,6 +27,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							desktopUrl: "img/Ani-Nov-10-D.jpg",
 							tabletUrl: "img/Ani-Nov-10-T.jpg",
 							mobileUrl: "img/Ani-Nov-10-T.jpg",
+							slideUrl: "http://google.com",
 							bgColor: "#ffffff"
 						},
 						button: {

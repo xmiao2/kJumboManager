@@ -19,8 +19,8 @@
 		blankImageUrl: "img/blank.gif",
 		buttonVPadding: "0.5rem",
 		slickDefaults: {
-			autoplay: false,
-			autoplaySpeed: 30000,
+			autoplay: true,
+			autoplaySpeed: 5000,
 			arrows: true,
 			dots: true
 		}
@@ -173,7 +173,7 @@
 			var width = imageElement.width(),
 			height = imageElement.height(),
 			overlay = $("<a></a>")
-				.prop("href", "#")	// TODO overlay link
+				.prop("href", image.slideUrl)	// Url for each slide
 				.append($("<div></div>")
 					.addClass(settings.overlayClass)
 					.css({
@@ -216,7 +216,10 @@
 
 	getJumbotronContainer = function(json, type) {
 
-		var slickOptions = {};
+		var slickOptions = {
+			autoplay: json.autoplaySpeed > 0,
+			autoplaySpeed: json.autoplaySpeed > 0 ? json.autoplaySpeed : 0
+		};
 
 		switch(type) {
 			case TYPE_DESKTOP:
@@ -242,8 +245,7 @@
 		}
 
 		var lazyloadImage = function(event, slick, i){
-			//TODO lazyload
-			// debugger;
+			// lazyload
 			i = typeof i !== "undefined" ? i : 0;
 			var image = $(slick.$slides[i]).children("."+settings.imageClass),
 			src = image.attr(DATA_SRC);

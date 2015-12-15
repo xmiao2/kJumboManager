@@ -40,6 +40,8 @@ window.jumboManager = (function($){
 		gridVGapId: "jumbomanager-grid-vgap",
 		gridHGapId: "jumbomanager-grid-hgap",
 		slideBgColorId: "jumbomanager-slide-bg-color",
+		slideUrlId: "jumbomanager-slide-url",
+		clearSlideUrlId: "jumbomanager-clear-slide-url",
 		desktopMaxHeightId: "jumbomanager-desktop-max-height",
 		tabletMaxHeightId: "jumbomanager-tablet-max-height",
 		mobileMaxHeightId: "jumbomanager-mobile-max-height",
@@ -52,6 +54,7 @@ window.jumboManager = (function($){
 		desktopImageUploadId: "jumbomanager-desktop-image-upload",
 		tabletImageUploadId: "jumbomanager-tablet-image-upload",
 		mobileImageUploadId: "jumbomanager-mobile-image-upload",
+		autoplaySpeedId: "jumbomanager-autoplay-speed",
 
 		responsiveSliderId: "jumbomanager-responsive-slider",
 		overlayId: "jumbomanager-overlay",
@@ -280,6 +283,15 @@ window.jumboManager = (function($){
 		};
 		
 		return {
+
+			getAutoplaySpeed: function() {
+				return json.autoplaySpeed;
+			},
+
+			setAutoplaySpeed: function(speed) {
+				json.autoplaySpeed = speed;
+			},
+
 			getDesktopMaxHeight: function() {
 				return json.desktopMaxHeight;
 			},
@@ -622,6 +634,11 @@ window.jumboManager = (function($){
 						})
 					;
 
+					// Populate slide url
+					_ui.$slideUrl
+						.val(json.image.slideUrl)
+					;
+
 					// Populate Desktop Image Location
 					_ui.$desktopImageSrc
 						.val(json.image.desktopUrl)
@@ -902,7 +919,7 @@ window.jumboManager = (function($){
 			};
 			ui.$desktopMaxHeight.slider({
 				min: 50,
-				max: 700,
+				max: 800,
 				step: 10,
 				value: options.initDesktopMaxHeight,
 				slide: updateDesktopMaxHeight,
@@ -916,7 +933,7 @@ window.jumboManager = (function($){
 			};
 			ui.$tabletMaxHeight.slider({
 				min: 50,
-				max: 700,
+				max: 800,
 				step: 10,
 				value: options.initTabletMaxHeight,
 				slide: updateTabletMaxHeight,
@@ -930,7 +947,7 @@ window.jumboManager = (function($){
 			};
 			ui.$mobileMaxHeight.slider({
 				min: 50,
-				max: 700,
+				max: 800,
 				step: 10,
 				value: options.initMobileMaxHeight,
 				slide: updateMobileMaxHeight,
@@ -1092,6 +1109,24 @@ window.jumboManager = (function($){
 				updateCustomRange(ui.$responsiveWidths);
 			});
 
+			// TODO autoplay
+
+			var updateAutoplaySpeed = function(event, ui) {
+				Jumbos.setAutoplaySpeed(ui.value * 1000);	// Convert to ms
+			};
+
+			ui.$autoplaySpeed
+				.slider({
+					step: 0.5,
+					min: 0,
+					max: 10,
+					value: options.initAutoplaySpeed / 1000,
+					change: updateAutoplaySpeed
+				})
+				.slider("pips", {suffix: "s"})
+				.slider("float", {suffix: "s"})
+			;
+
 			ui.$desktopImageUpload.on("change", function(event){
 				//TODO upload images
 				debugger;
@@ -1106,10 +1141,24 @@ window.jumboManager = (function($){
 				//TODO upload images
 				debugger;
 			});
+
+			// Clear slide url
+			ui.$clearSlideUrl
+				.on("click", function(event){
+					xmBootstrapAlert.alert({
+						content: "Cleared",
+						fade: true,
+						fadeTime: 500,
+						showClose: false
+					});
+					ui.$slideUrl.val("");
+				})
+			;
 		})({
 			initBgColor: options.initBgColor,
 			initMobileWidth: options.initMobileWidth,
-			initTabletWidth: options.initTabletWidth
+			initTabletWidth: options.initTabletWidth,
+			initAutoplaySpeed: options.initAutoplaySpeed
 		});
 
 		(function initComponentControls(options){
@@ -1379,11 +1428,12 @@ window.jumboManager = (function($){
 					initGridHGap: 50,
 					initGridVGap: 50,
 					initDesktopMaxHeight: 400,
-					initTabletMaxHeight: 700,
-					initMobileMaxHeight: 700,
+					initTabletMaxHeight: 800,
+					initMobileMaxHeight: 800,
 					initBgColor: "red",
 					initMobileWidth: 600,
-					initTabletWidth: 900
+					initTabletWidth: 900,
+					initAutoplaySpeed: 5000,
 				});
 
 				$.when(Jumbos.init(ui), Jumbo.init(ui)).done(function(){
