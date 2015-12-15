@@ -142,7 +142,7 @@
 				height = json.tabletMaxHeight;
 				buttonJson = jumbo.button;		// Duplicated in case we are moving button settings to responsive
 				buttonJson.hAlign = "50%";
-				buttonJson.vAlign = "92%";
+				buttonJson.vAlign = "90%";
 				buttonJson.minWidth = "50%";
 				break;
 
@@ -171,7 +171,7 @@
 		$.when(getImage(imageUrl), getButtonContainer(buttonJson)).done(function(imageElement, buttonContainerElement){
 			slideContainer.append(imageElement);
 			var width = imageElement.width(),
-			height = imageElement.height(),
+			height = slideContainer.height(),
 			overlay = $("<a></a>")
 				.prop("href", image.slideUrl)	// Url for each slide
 				.append($("<div></div>")
@@ -310,9 +310,10 @@
 
 		setTimeout(function(){
 			$.each($("."+settings.overlayClass), function(idx, el) {
-				var imageElement = $(this).closest("."+settings.slideContainerClass).children("."+settings.imageClass);
+				var slideElement = $(this).closest("."+settings.slideContainerClass);
+				var imageElement = slideElement.children("img");
 				$(this).width(imageElement.width());
-				$(this).height(imageElement.height());
+				$(this).height(slideElement.height());
 			});
 		}, 100);	// Setting timeout here to accomodate the throttle in slick slider's resize
 	},

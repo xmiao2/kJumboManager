@@ -18,7 +18,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 				desktopMaxHeight: 440,
 				tabletMaxHeight: 800,
 				mobileMaxHeight: 800,
-				autoplaySpeed: 5000,
+				autoplaySpeed: 0,
 				tabletWidth: 900,
 				mobileWidth: 600,
 				jumbos: [

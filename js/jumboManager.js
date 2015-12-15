@@ -447,10 +447,11 @@ window.jumboManager = (function($){
 						.html(
 							getImageContainer(responsiveImageUrl, _renderOverlay)
 								.addClass(CANVAS_IMAGE_CONTAINER)
-								.css("background-color", json.image.bgColor)
+								.css({
+									backgroundColor: json.image.bgColor,
+									maxHeight: maxHeight
+								})
 						)
-						.find("img")
-							.css("maxHeight", maxHeight)
 					;
 				},
 
@@ -459,24 +460,46 @@ window.jumboManager = (function($){
 					_renderBackgroundImage();
 					_renderControls();
 					_focusPreviewImage();
+					_renderOverlay();
 					_renderButtons();
 					_ui.$mainCanvas.responsiveCanvas({redrawGrid: true, resize: true});
 				},
 
 				_renderButtons = function() {
 
+					// TODO responsive button
+
+					var responsiveWidth = _ui.$background.width(),
+					buttonJson = {};
+
+					if(responsiveWidth > Jumbos.getTabletWidth()) {			// Desktop
+						buttonJson = $.extend(true,{},json.button);
+					} else if(responsiveWidth > Jumbos.getMobileWidth()) {	// Tablet
+						buttonJson = $.extend(true,{},json.button);
+						buttonJson.hAlign = "50%";
+						buttonJson.vAlign = "90%";
+						buttonJson.minWidth = "50%";
+					} else {												// Mobile
+						buttonJson = $.extend(true,{},json.button);
+						buttonJson.hAlign = "50%";
+						buttonJson.vAlign = "90%";
+						buttonJson.minWidth = "50%";
+						buttonJson.buttons[SECONDARY_BUTTON_INDEX].visible = false;
+					}
+
 					_ui.$buttons
 						.empty()
 						.css({
 							display: "inline-block",
 							position: "absolute",
-							left: json.button.hAlign,
-							top: json.button.vAlign,
-							transform: "translate(-" + json.button.hAlign + ", -" + json.button.vAlign + ")",
-							minWidth: json.button.minWidth
-						});
+							left: buttonJson.hAlign,
+							top: buttonJson.vAlign,
+							transform: "translate(-" + buttonJson.hAlign + ", -" + buttonJson.vAlign + ")",
+							minWidth: buttonJson.minWidth
+						})
+					;
 
-					$.each(json.button.buttons, function(idx, button){
+					$.each(buttonJson.buttons, function(idx, button){
 						if(button.visible){
 							_ui.$buttons
 								.append($("<div></div>")
@@ -486,8 +509,8 @@ window.jumboManager = (function($){
 										"background-color": button.bgColor,
 										"border-color": button.color,
 										"color": button.color,
-										"margin-top": json.button.vGap,
-										"font-size": json.button.fontSize,
+										"margin-top": buttonJson.vGap,
+										"font-size": buttonJson.fontSize,
 										"padding": settings.buttonVPadding + " 0"
 									})
 								)
@@ -855,6 +878,15 @@ window.jumboManager = (function($){
 
 		updateSliderRangeColor(canvasWidth);
 
+		var updateResponsiveWidth = function(event, _ui) {
+			ui.$preview.width(_ui.value);
+			$(".letterbox").width((canvasWidth - _ui.value) / 2);
+			Jumbos.getCurrentJumbo().renderFocusImage();
+
+			// Set color
+			updateSliderRangeColor(_ui.value);
+		};
+
 		ui.$responsiveSlider.slider({
 			range: "min",
 			min: 300,
@@ -864,14 +896,8 @@ window.jumboManager = (function($){
 			create: function(event, _ui) {
 				updateSliderRangeColor(_ui.value);
 			},
-			slide: function(event, _ui) {
-				ui.$preview.width(_ui.value);
-				$(".letterbox").width((canvasWidth - _ui.value) / 2);
-				Jumbos.getCurrentJumbo().renderFocusImage();
-
-				// Set color
-				updateSliderRangeColor(_ui.value);
-			}
+			slide: updateResponsiveWidth,
+			change: updateResponsiveWidth
 		}).slider("pips", {suffix: "px"}).slider("float", {suffix: "px"});
 	},
 
@@ -1123,7 +1149,7 @@ window.jumboManager = (function($){
 					value: options.initAutoplaySpeed / 1000,
 					change: updateAutoplaySpeed
 				})
-				.slider("pips", {suffix: "s"})
+				.slider("pips", {labels:{first: "OFF", last:"10s"}})
 				.slider("float", {suffix: "s"})
 			;
 
