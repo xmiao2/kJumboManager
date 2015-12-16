@@ -34,8 +34,10 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							hAlign: "78.6%",
 							vAlign: "70%", 
 							vGap: "1rem",
+							hGap: "1rem",
 							fontSize: "1rem",
 							minWidth: "17%",
+							orientation: "horizontal",
 							buttons: [
 								{
 									visible: true,
@@ -65,6 +67,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							hAlign: "91.3%",
 							vAlign: "50%", 
 							vGap: "1rem",
+							hGap: "1rem",
 							fontSize: "2.4rem",
 							minWidth: "26.3%",
 							buttons: [
@@ -96,6 +99,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							hAlign: "50%",
 							vAlign: "89%", 
 							vGap: "1rem",
+							hGap: "1rem",
 							fontSize: "1rem",
 							minWidth: "50%",
 							buttons: [
@@ -127,6 +131,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							hAlign: "21%",
 							vAlign: "75%", 
 							vGap: "1rem",
+							hGap: "1rem",
 							fontSize: "1rem",
 							minWidth: "15%",
 							buttons: [
@@ -158,6 +163,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							hAlign: "75%",
 							vAlign: "77%", 
 							vGap: "1rem",
+							hGap: "1rem",
 							fontSize: "1rem",
 							minWidth: "15%",
 							buttons: [
@@ -220,6 +226,7 @@ window.jumboManagerREST = window.jumboManagerREST || (function($){
 							hAlign: "75%",
 							vAlign: "70%", 
 							vGap: "1rem",
+							hGap: "1rem",
 							fontSize: "1rem",
 							minWidth: "15%",
 							buttons: [

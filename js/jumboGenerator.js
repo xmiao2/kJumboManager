@@ -58,15 +58,10 @@
 		return dfd.promise();
 	},
 
-	getButton = function() {
-		var dfd = $.Deferred();
-
-		dfd.resolve();
-		return dfd.promise();
-	},
-
 	getButtonContainer = function(buttonJson) {
 		var dfd = $.Deferred(),
+		isPrimaryOnly = !buttonJson.buttons[1].visible,
+		isHorizontal = buttonJson.orientation && buttonJson.orientation === "horizontal",
 		buttonContainer = $("<div></div>")
 			.addClass(settings.buttonContainerClass)
 			.css({
@@ -89,20 +84,13 @@
 						"background-color": button.bgColor,
 						"border": "1px solid " + button.color,
 						"color": button.color,
-						"margin-top": buttonJson.vGap,
+						"margin-top": !isHorizontal ? buttonJson.vGap : 0,
+						"margin-left": isHorizontal ? buttonJson.hGap : 0,
 						"font-size": buttonJson.fontSize,
 						"padding": settings.buttonVPadding + " 0",
 						"text-align": "center",
-						"display": "block"
-					})
-					.hover(function(){
-						$(this).css({
-							"opacity": 0.5
-						});
-					}, function(){
-						$(this).css({
-							"opacity": 1
-						});
+						"display": "inline-block",
+						"width": !isPrimaryOnly && isHorizontal ? "calc(50% - " + buttonJson.hGap + ")" : "100%",
 					})
 				;
 
@@ -110,7 +98,9 @@
 					buttonElement
 						.addClass(settings.primaryButtonClass)
 						.css({
-							"margin-top": 0
+							"margin-top": 0,
+							"margin-left": 0,
+							"margin-right": !isPrimaryOnly && isHorizontal ? buttonJson.hGap : 0
 						})
 					;
 				}
@@ -144,6 +134,7 @@
 				buttonJson.hAlign = "50%";
 				buttonJson.vAlign = "90%";
 				buttonJson.minWidth = "50%";
+				buttonJson.orientation = "horizontal";
 				break;
 
 			case TYPE_MOBILE:
@@ -153,6 +144,7 @@
 				buttonJson.hAlign = "50%";
 				buttonJson.vAlign = "90%";
 				buttonJson.minWidth = "50%";
+				buttonJson.orientation = "horizontal";
 				buttonJson.buttons[1].visible = false;
 				break;
 		}

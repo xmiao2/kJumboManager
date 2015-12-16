@@ -10,6 +10,8 @@ window.jumboManager = (function($){
 	ID = "Id",
 	JUMBOS = "jumbos",
 	JUMBO = "jumbo",
+	BUTTON_HORIZONTAL = "horizontal",
+	BUTTON_VERTICAL = "vertical",
 
 	// Class names
 	IMAGE_CONTAINER = "image-container",
@@ -61,9 +63,11 @@ window.jumboManager = (function($){
 
 		buttonsId: "jumbomanager-buttons",
 		buttonContentId: "jumbomanager-button-content",
+		buttonOrientationId: "jumbomanager-button-orientation",
 		buttonDHAlignId: "jumbomanager-button-d-halign",
 		buttonDVAlignId: "jumbomanager-button-d-valign",
 		buttonDVGapId: "jumbomanager-button-d-vgap",
+		buttonDHGapId: "jumbomanager-button-d-hgap",
 		buttonDMinWidthId: "jumbomanager-button-d-minWidth",
 		buttonDFontSizeId: "jumbomanager-button-d-fontsize",
 
@@ -467,8 +471,7 @@ window.jumboManager = (function($){
 
 				_renderButtons = function() {
 
-					// TODO responsive button
-
+					// responsive button
 					var responsiveWidth = _ui.$background.width(),
 					buttonJson = {};
 
@@ -486,6 +489,15 @@ window.jumboManager = (function($){
 						buttonJson.minWidth = "50%";
 						buttonJson.buttons[SECONDARY_BUTTON_INDEX].visible = false;
 					}
+
+					// orientation
+					if(buttonJson.orientation === BUTTON_HORIZONTAL) {
+						buttonJson.vGap = 0;
+					} else {
+						buttonJson.hGap = 0;
+					}
+					var isPrimaryOnly = !buttonJson.buttons[SECONDARY_BUTTON_INDEX].visible,
+					isHorizontal = buttonJson.orientation && buttonJson.orientation === "horizontal";
 
 					_ui.$buttons
 						.empty()
@@ -510,8 +522,10 @@ window.jumboManager = (function($){
 										"border-color": button.color,
 										"color": button.color,
 										"margin-top": buttonJson.vGap,
+										"margin-left": buttonJson.hGap,
 										"font-size": buttonJson.fontSize,
-										"padding": settings.buttonVPadding + " 0"
+										"padding": settings.buttonVPadding + " 0",
+										"width": !isPrimaryOnly && isHorizontal ? "calc(50% - " + buttonJson.hGap + ")" : "100%"
 									})
 								)
 							;
@@ -520,7 +534,9 @@ window.jumboManager = (function($){
 								_ui.$buttons.find("."+OVERLAY_BUTTON)
 									.addClass(OVERLAY_BUTTON_PRIMARY)
 									.css({
-										"margin-top": 0
+										"margin-top": 0,
+										"margin-left": 0,
+										"margin-right": !isPrimaryOnly && isHorizontal ? buttonJson.hGap : 0
 									})
 								;
 							}
@@ -546,6 +562,16 @@ window.jumboManager = (function($){
 						$(".display-for-primary").show();
 					} else {
 						_ui.$buttonContent.selectpicker("val", "none");
+					}
+
+					// Populate button orientation
+					$(".display-for-horizontal, .display-for-vertical").hide();
+					if(json.button.orientation === BUTTON_HORIZONTAL) {
+						_ui.$buttonOrientation.selectpicker("val", BUTTON_HORIZONTAL);
+						$(".display-for-horizontal").show();
+					} else {	// Button orientation is vertical OR undefined
+						_ui.$buttonOrientation.selectpicker("val", BUTTON_VERTICAL);
+						$(".display-for-vertical").show();
 					}
 
 					// Populate desktop horizontal alignment
@@ -723,6 +749,10 @@ window.jumboManager = (function($){
 						json.button.buttons[idx].visible = visible;
 					},
 
+					setButtonOrientation: function(orientation) {
+						json.button.orientation = orientation;
+					},
+
 					setButtonText: function(idx, text) {
 						json.button.buttons[idx].text = text;
 					},
@@ -744,6 +774,11 @@ window.jumboManager = (function($){
 					setButtonDVGap: function(_DVGap, unit) {
 						unit = typeof unit !== 'undefined' ? unit : 'rem';
 						json.button.vGap = _DVGap + unit;
+					},
+
+					setButtonDHGap: function(_DHGap, unit) {
+						unit = typeof unit !== 'undefined' ? unit : 'rem';
+						json.button.hGap = _DHGap + unit;
 					},
 
 					setButtonDMinWidth: function(_DMinWidth, unit) {
@@ -1209,6 +1244,16 @@ window.jumboManager = (function($){
 				Jumbos.getCurrentJumbo().renderButtons();
 			});
 
+			ui.$buttonOrientation.selectpicker({
+				style: "btn-warning"
+			}).on("change", function(event){
+				var input = $(this).val(),
+				orientation = (input === BUTTON_HORIZONTAL || input === BUTTON_VERTICAL) ? input : BUTTON_VERTICAL;
+				Jumbos.getCurrentJumbo().setButtonOrientation(orientation);
+				Jumbos.getCurrentJumbo().renderButtonControls();
+				Jumbos.getCurrentJumbo().renderButtons();
+			});
+
 			var updateDHAlign = function(event, _ui) {
 				Jumbos.getCurrentJumbo().setButtonDHAlign(_ui.value);
 				Jumbos.getCurrentJumbo().renderButtons();
@@ -1250,6 +1295,21 @@ window.jumboManager = (function($){
 				value: options.initDVGap,
 				slide: updateDVGap,
 				change: updateDVGap
+			}).slider('pips', {suffix: 'rem'}).slider('float', {suffix: 'rem'});
+
+			var updateDHGap = function(event, _ui) {
+				//TODO DH
+				Jumbos.getCurrentJumbo().setButtonDHGap(_ui.value);
+				Jumbos.getCurrentJumbo().renderButtons();
+			};
+
+			ui.$buttonDHGap.slider({
+				min: 0,
+				max: 20,
+				step: 0.5,
+				value: options.initDHGap,
+				slide: updateDHGap,
+				change: updateDHGap
 			}).slider('pips', {suffix: 'rem'}).slider('float', {suffix: 'rem'});
 
 			var updateDMinWidth = function(event, _ui) {
@@ -1307,6 +1367,7 @@ window.jumboManager = (function($){
 			initDHAlign: options.initDHAlign || 50,		//%
 			initDVAlign: options.initDVAlign || 50,		//%
 			initDVGap: options.initDVGap || 1,			//rem
+			initDHGap: options.initDHGap || 1,			//rem
 			initDFontSize: options.initDFontSize || 1,	//rem
 			initDMinWidth: options.initDMinWidth || 10 	//%
 		});
